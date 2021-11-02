@@ -6,7 +6,7 @@ require (
 	github.com/gogo/protobuf v1.3.2
 	github.com/spf13/cobra v1.2.1
 	github.com/tendermint/tendermint v0.34.14
-	google.golang.org/grpc v1.38.0
+	google.golang.org/grpc v1.42.0
 )
 
 require (
