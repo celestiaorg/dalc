@@ -1,7 +1,8 @@
 syntax = "proto3";
 package optimint;
-option go_package = "github.com/celestiaorg/dalc/types/optimint";
-import "tendermint/types.proto";
+option go_package = "github.com/celestiaorg/dalc/proto/optimint";
+
+import "tendermint/types/types.proto";
 
 // Version captures the consensus rules for processing a block in the blockchain,
 // including all blockchain data structures and the rules of the application's
@@ -62,7 +63,7 @@ message Commit {
 message Data {
 	repeated bytes txs = 1;
 	repeated bytes intermediate_state_roots = 2;
-	repeated tendermint.Evidence evidence = 3;
+	repeated tendermint.types.Evidence evidence = 3;
 }
 
 message Block {	

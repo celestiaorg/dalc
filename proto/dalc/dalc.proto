@@ -1,8 +1,8 @@
 syntax = "proto3";
 package dalc;
-option go_package = "github.com/celestiaorg/dalc/rpc";
+option go_package = "github.com/celestiaorg/dalc/proto/dalc";
 
-import "../optimint/optimint.proto";
+import "optimint/optimint.proto";
 
 enum StatusCode {
 	STATUS_CODE_UNSPECIFIED = 0;
