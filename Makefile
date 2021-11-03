@@ -2,7 +2,6 @@
 
 PACKAGES=$(shell go list ./...)
 BUILDDIR ?= $(CURDIR)/build
-CURDIRR := $(CURDIR)
 COMMIT := $(shell git log -1 --format='%H')
 DOCKER := $(shell which docker)
 DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf
@@ -27,3 +26,5 @@ proto-gen:
 .PHONY: proto-gen
 proto-lint:
 	@$(DOCKER_BUF) lint --error-format=json
+
+
