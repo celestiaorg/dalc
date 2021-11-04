@@ -1,7 +1,0 @@
-[block-submitter]
-
-[light-client]
-
-[keyring]
-  backend = "os"
-  path = "~/.dalc"
