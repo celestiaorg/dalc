@@ -11,18 +11,33 @@ import (
 )
 
 type Config struct {
-	laddr string
+	ServerLaddr string
+
+	// how do we want to load the keyring? We could load it by file, or idk. I
+	// guess let's check how this handled in the cosmos sdk and do the same
+
 	SubmitBlockConfig
+}
+
+func DefaultConfig() Config {
+	return Config{
+		SubmitBlockConfig: DefaultSubmitBlockConfig(),
+		serverLaddr:       "tcp://127.0.0.1:",
+	}
 }
 
 func NewServer() *grpc.Server {
 	// todo(evan) load config
-	cfg := Config{}
+	cfg := Config{SubmitBlockConfig: DefaultSubmitBlockConfig()}
 
 	logger := tmlog.NewTMLogger(os.Stdout)
+
+
+
+	bs := cfg.newBlockSubmitter()
 	lc := &DataAvailabilityLightClient{
 		logger:         logger,
-		blockSubmitter: cfg.newBlockSubmitter(),
+		blockSubmitter: ,
 	}
 	srv := grpc.NewServer()
 	dalc.RegisterDALCServiceServer(srv)

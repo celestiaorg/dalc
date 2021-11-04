@@ -47,10 +47,11 @@ type SubmitBlockConfig struct {
 
 func DefaultSubmitBlockConfig() SubmitBlockConfig {
 	return SubmitBlockConfig{
-		GasLimit:   2000000,
-		FeeAmount:  1,
-		Denom:      "tia",
-		RPCAddress: "127.0.0.1:9090",
+		GasLimit:       2000000,
+		FeeAmount:      1,
+		Denom:          "tia",
+		RPCAddress:     "127.0.0.1:9090",
+		KeyringAccName: "test",
 	}
 }
 
@@ -141,9 +142,10 @@ func (bs *blockSubmitter) SubmitBlock(ctx context.Context, block *optimint.Block
 func (bs *blockSubmitter) squareSizes() []uint64 {
 	// todo: don't hardcode the square sizes
 	return []uint64{
-		consts.MaxSquareSize / 8,
-		consts.MaxSquareSize / 4,
-		consts.MaxSquareSize / 2,
+		// only use a single square size until the app is fixed in #144
+		// consts.MaxSquareSize / 8,
+		// consts.MaxSquareSize / 4,
+		// consts.MaxSquareSize / 2,
 		consts.MaxSquareSize,
 	}
 }
