@@ -4,29 +4,34 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
+	"github.com/celestiaorg/dalc/config"
 	"github.com/celestiaorg/dalc/proto/dalc"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	tmlog "github.com/tendermint/tendermint/libs/log"
 	"google.golang.org/grpc"
 )
 
-type Config struct {
-	laddr string
-	SubmitBlockConfig
-}
-
-func NewServer() *grpc.Server {
-	// todo(evan) load config
-	cfg := Config{}
-
+func NewServer(cfg config.ServerConfig) (*grpc.Server, error) {
 	logger := tmlog.NewTMLogger(os.Stdout)
+	// todo(evan): handle password or at least something geeze
+	kr, err := keyring.New("celestia", cfg.KeyringPath, cfg.KeyringBackend, strings.NewReader(""))
+
+	bs, err := newBlockSubmitter(cfg.BlockSubmitterConfig, kr)
+	if err != nil {
+		return nil, err
+	}
+
 	lc := &DataAvailabilityLightClient{
 		logger:         logger,
-		blockSubmitter: cfg.newBlockSubmitter(),
+		blockSubmitter: bs,
 	}
+
 	srv := grpc.NewServer()
-	dalc.RegisterDALCServiceServer(srv)
-	return srv
+	dalc.RegisterDALCServiceServer(srv, lc)
+
+	return srv, nil
 }
 
 type DataAvailabilityLightClient struct {

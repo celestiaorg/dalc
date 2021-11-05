@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/BurntSushi/toml"
 )
@@ -58,14 +59,42 @@ func Load(path string) (ServerConfig, error) {
 
 func DefaultServerConfig() ServerConfig {
 	return ServerConfig{
-		// todo(evan): add default configs later
-		// BlockSubmitterConfig: ,
-		// LightClientConfig: ,
-		KeyringConfig: DefaultKeyringConfig(),
+		BlockSubmitterConfig: DefaultBlockSubmitterConfig(),
+		KeyringConfig:        DefaultKeyringConfig(),
 	}
 }
 
+// BlockSubmitterConfig holds the settings relevant for submitting a block to Celestia
+// Config holds all configuration required by Celestia DA layer client.
 type BlockSubmitterConfig struct {
+	// temporary fee fields
+	GasLimit  uint64
+	FeeAmount uint64
+	Denom     string
+
+	// RPC related params
+	RPCAddress string
+	ChainID    string
+	Timeout    time.Duration
+
+	// BroadcastMode determines what the light client does after submitting a
+	// WirePayForMessage. 0 Unspecified, 1 Block until included in a block, 2
+	// Syncronous, 3 Asyncronous
+	BroadcastMode int // see https://github.com/celestiaorg/cosmos-sdk/blob/51997c8de9c54e279f303a556ab59ea5dd28f1e2/types/tx/service.pb.go#L71-L83 // nolint: lll
+
+	// KeyringAccName is the name of the account registered in the keyring
+	// for the `From` address field
+	KeyringAccName string
+}
+
+func DefaultBlockSubmitterConfig() BlockSubmitterConfig {
+	return BlockSubmitterConfig{
+		GasLimit:       2000000,
+		FeeAmount:      1,
+		Denom:          "tia",
+		RPCAddress:     "127.0.0.1:9090",
+		KeyringAccName: "test",
+	}
 }
 
 type KeyringConfig struct {
