@@ -20,7 +20,7 @@ func main() {
 		initCmd(),
 	)
 	if err := root.Execute(); err != nil {
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }
 
