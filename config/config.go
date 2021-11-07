@@ -27,13 +27,15 @@ func init() {
 }
 
 type ServerConfig struct {
+	BaseConfig           `toml:"base"`
 	BlockSubmitterConfig `toml:"block-submitter"`
 	LightClientConfig    `toml:"light-client"`
 	KeyringConfig        `toml:"keyring"`
 }
 
+// Save saves the server config to a specific path
 func (cfg ServerConfig) Save(path string) error {
-	cfgFile, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, 0660)
+	cfgFile, err := os.OpenFile(path+ConfigFileName, os.O_CREATE|os.O_RDWR, 0660)
 	if err != nil {
 		return err
 	}
@@ -44,9 +46,10 @@ func (cfg ServerConfig) Save(path string) error {
 	return cfgFile.Close()
 }
 
+// Load attempts to load the dalc.toml file from the provided path
 func Load(path string) (ServerConfig, error) {
 	var cfg ServerConfig
-	rawCfg, err := os.ReadFile(path)
+	rawCfg, err := os.ReadFile(path + ConfigFileName)
 	if err != nil {
 		return cfg, err
 	}
@@ -57,6 +60,7 @@ func Load(path string) (ServerConfig, error) {
 	return cfg, nil
 }
 
+// DefaultServerConfig returns the default ServerConfig
 func DefaultServerConfig() ServerConfig {
 	return ServerConfig{
 		BlockSubmitterConfig: DefaultBlockSubmitterConfig(),
@@ -64,29 +68,42 @@ func DefaultServerConfig() ServerConfig {
 	}
 }
 
+// BaseConfig contains the basic configurations required for the grpc server
+type BaseConfig struct {
+	ListenAddr string `toml:"laddr"`
+}
+
 // BlockSubmitterConfig holds the settings relevant for submitting a block to Celestia
 // Config holds all configuration required by Celestia DA layer client.
 type BlockSubmitterConfig struct {
-	// temporary fee fields
-	GasLimit  uint64
-	FeeAmount uint64
-	Denom     string
+	// GasLimit is the gas limit used to submit celestia txs. Defaults to 200000
+	GasLimit uint64 `toml:"gas-limit"`
+	// FeeAmount specifies the fee to be used per amount of gas used. Defaults
+	// to 1
+	FeeAmount uint64 `toml:"fee-amount"`
+	// Denomination is the token denomination of the celestia chain being used
+	// for a data availability layer. Defaults to "tia"
+	Denom string `toml:"denomination"`
 
-	// RPC related params
-	RPCAddress string
-	ChainID    string
-	Timeout    time.Duration
+	// RPCAddress is the rpc address to submit celestia transactions to
+	RPCAddress string `toml:"celestia-rpc-addr"`
+	// ChainID is the chainID of the celstia chain being used as a data availability layer
+	ChainID string `toml:"chain-id"`
+	// Timeout is the amount of time in seconds waited for a tx to be included in a block. Defaults to 180 seconds
+	Timeout time.Duration `toml:"timeout"` // todo: actually implement a timeout
 
 	// BroadcastMode determines what the light client does after submitting a
 	// WirePayForMessage. 0 Unspecified, 1 Block until included in a block, 2
-	// Syncronous, 3 Asyncronous
-	BroadcastMode int // see https://github.com/celestiaorg/cosmos-sdk/blob/51997c8de9c54e279f303a556ab59ea5dd28f1e2/types/tx/service.pb.go#L71-L83 // nolint: lll
+	// Syncronous, 3 Asyncronous. Defualts to 1
+	BroadcastMode int `toml:"broadcast-mode"` // see https://github.com/celestiaorg/cosmos-sdk/blob/51997c8de9c54e279f303a556ab59ea5dd28f1e2/types/tx/service.pb.go#L71-L83 // nolint: lll
 
 	// KeyringAccName is the name of the account registered in the keyring
-	// for the `From` address field
-	KeyringAccName string
+	// for the `From` address field. Defaults to "test"
+	KeyringAccName string `toml:"keyring-account-name"`
 }
 
+// DefaultBlockSubmitterConfig returns the default configurations for the
+// BlockSubmitter portion of the server config1
 func DefaultBlockSubmitterConfig() BlockSubmitterConfig {
 	return BlockSubmitterConfig{
 		GasLimit:       2000000,
@@ -94,14 +111,22 @@ func DefaultBlockSubmitterConfig() BlockSubmitterConfig {
 		Denom:          "tia",
 		RPCAddress:     "127.0.0.1:9090",
 		KeyringAccName: "test",
+		BroadcastMode:  1,
+		Timeout:        time.Minute * 3,
 	}
 }
 
+// KeyringConfig contains the info relevant to using a keyring
 type KeyringConfig struct {
+	// KeyringBackend indicates which type of backend is to be used by the
+	// keyring
 	KeyringBackend string `toml:"backend"`
-	KeyringPath    string `toml:"path"`
+	// KeyringPath specifies the path do which any keyring data is stored.
+	KeyringPath string `toml:"path"`
 }
 
+// DefaultKeyringConfig returns the default configuration of the Keyring portion
+// of the ServerConfig
 func DefaultKeyringConfig() KeyringConfig {
 	return KeyringConfig{
 		KeyringBackend: "os",

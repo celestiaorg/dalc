@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func NewServer(cfg config.ServerConfig) (*grpc.Server, error) {
+func New(cfg config.ServerConfig) (*grpc.Server, error) {
 	logger := tmlog.NewTMLogger(os.Stdout)
 	// todo(evan): handle password or at least something geeze
 	kr, err := keyring.New("celestia", cfg.KeyringPath, cfg.KeyringBackend, strings.NewReader(""))
@@ -42,14 +42,17 @@ type DataAvailabilityLightClient struct {
 
 // SubmitBlock posts an optimint blcok
 func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq *dalc.SubmitBlockRequest) (*dalc.SubmitBlockResponse, error) {
+	// submit the block
 	broadcastResp, err := d.blockSubmitter.SubmitBlock(ctx, blockReq.Block)
 	if err != nil {
 		return &dalc.SubmitBlockResponse{
 			Result: &dalc.DAResponse{Code: dalc.StatusCode_STATUS_CODE_ERROR, Message: err.Error()},
 		}, err
 	}
+
+	// handle response
 	resp := broadcastResp.TxResponse
-	if broadcastResp.TxResponse.Code != 0 {
+	if resp.Code != 0 {
 		return &dalc.SubmitBlockResponse{
 			Result: &dalc.DAResponse{
 				Code:    dalc.StatusCode_STATUS_CODE_ERROR,
@@ -57,6 +60,7 @@ func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq 
 			},
 		}, err
 	}
+
 	d.logger.Info("Submitted block to celstia", "height", resp.Height, "gas used", resp.GasUsed, "hash", resp.TxHash)
 	return &dalc.SubmitBlockResponse{Result: &dalc.DAResponse{Code: dalc.StatusCode_STATUS_CODE_SUCCESS}}, nil
 }
