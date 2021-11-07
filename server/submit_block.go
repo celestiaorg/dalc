@@ -51,11 +51,6 @@ func (bs *blockSubmitter) buildPayForMessage(ctx context.Context, block *optimin
 		return nil, err
 	}
 
-	err = bs.signer.QueryAccountNumber(ctx, bs.celestiaRPC)
-	if err != nil {
-		return nil, err
-	}
-
 	err = pfmMsg.SignShareCommitments(bs.signer, bs.newTxBuilder())
 	if err != nil {
 		return nil, err
