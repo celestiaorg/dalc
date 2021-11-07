@@ -37,7 +37,7 @@ type blockSubmitter struct {
 	celestiaRPC *grpc.ClientConn
 }
 
-func (bs *blockSubmitter) buildPayForMessage(ctx context.Context, block *optimint.Block) (*apptypes.MsgWirePayForMessage, error) {
+func (bs *blockSubmitter) buildPayForMessage(block *optimint.Block) (*apptypes.MsgWirePayForMessage, error) {
 	// TODO(evan): change this when implementing ADR007
 	message, err := proto.Marshal(block)
 	if err != nil {
@@ -59,12 +59,12 @@ func (bs *blockSubmitter) buildPayForMessage(ctx context.Context, block *optimin
 
 // SubmitBlock prepares a WirePayForMessage that contains the provided block data
 func (bs *blockSubmitter) SubmitBlock(ctx context.Context, block *optimint.Block) (*tx.BroadcastTxResponse, error) {
-	pfmMsg, err := bs.buildPayForMessage(ctx, block)
+	err := bs.signer.QueryAccountNumber(ctx, bs.celestiaRPC)
 	if err != nil {
 		return nil, err
 	}
 
-	err = bs.signer.QueryAccountNumber(ctx, bs.celestiaRPC)
+	pfmMsg, err := bs.buildPayForMessage(block)
 	if err != nil {
 		return nil, err
 	}

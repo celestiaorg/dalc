@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"testing"
 
 	"github.com/celestiaorg/dalc/config"
@@ -25,10 +24,10 @@ func TestBuildPFM(t *testing.T) {
 			Height: 1,
 		},
 	}
-	pfm, err := bs.buildPayForMessage(context.TODO(), block)
+	pfm, err := bs.buildPayForMessage(block)
 	require.NoError(t, err)
 
-	signerInfo, err := kr.Key("test")
+	signerInfo, err := kr.Key(testAccName)
 	require.NoError(t, err)
 
 	rawBlock, err := block.Marshal()
@@ -40,7 +39,7 @@ func TestBuildPFM(t *testing.T) {
 
 func testBlockSubmitter(t *testing.T) (blockSubmitter, keyring.Keyring) {
 	t.Helper()
-	kr := generateKeyring(t, "test")
+	kr := generateKeyring(t)
 	testBS, err := newBlockSubmitter(config.DefaultBlockSubmitterConfig(), kr)
 	require.NoError(t, err)
 	return testBS, kr
@@ -68,6 +67,6 @@ func generateKeyring(t *testing.T, accts ...string) keyring.Keyring {
 const (
 	// nolint:lll
 	testMnemo   = `ramp soldier connect gadget domain mutual staff unusual first midnight iron good deputy wage vehicle mutual spike unlock rocket delay hundred script tumble choose`
-	testAccName = "test-account"
+	testAccName = "test"
 	testChainID = "test-chain-1"
 )
