@@ -16,8 +16,11 @@ import (
 // New creates a grpc server ready to listen for incoming messages from optimint
 func New(cfg config.ServerConfig) (*grpc.Server, error) {
 	logger := tmlog.NewTMLogger(os.Stdout)
-	// todo(evan): handle password or at least something geeze
+	// todo(evan): handle password or some key protection
 	kr, err := keyring.New("celestia", cfg.KeyringPath, cfg.KeyringBackend, strings.NewReader(""))
+	if err != nil {
+		return nil, err
+	}
 
 	bs, err := newBlockSubmitter(cfg.BlockSubmitterConfig, kr)
 	if err != nil {

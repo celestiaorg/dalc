@@ -68,5 +68,4 @@ const (
 	// nolint:lll
 	testMnemo   = `ramp soldier connect gadget domain mutual staff unusual first midnight iron good deputy wage vehicle mutual spike unlock rocket delay hundred script tumble choose`
 	testAccName = "test"
-	testChainID = "test-chain-1"
 )
