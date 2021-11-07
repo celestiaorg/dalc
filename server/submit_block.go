@@ -15,8 +15,6 @@ import (
 	"google.golang.org/grpc"
 )
 
-// "github.com/celestiaorg/optimint/types"
-
 func newBlockSubmitter(cfg config.BlockSubmitterConfig, ring keyring.Keyring) (blockSubmitter, error) {
 	client, err := grpc.Dial(cfg.RPCAddress, grpc.WithInsecure())
 	if err != nil {

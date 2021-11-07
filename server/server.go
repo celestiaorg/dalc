@@ -13,6 +13,7 @@ import (
 	"google.golang.org/grpc"
 )
 
+// New creates a grpc server ready to listen for incoming messages from optimint
 func New(cfg config.ServerConfig) (*grpc.Server, error) {
 	logger := tmlog.NewTMLogger(os.Stdout)
 	// todo(evan): handle password or at least something geeze
@@ -40,7 +41,7 @@ type DataAvailabilityLightClient struct {
 	blockSubmitter blockSubmitter
 }
 
-// SubmitBlock posts an optimint blcok
+// SubmitBlock posts an optimint block to celestia
 func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq *dalc.SubmitBlockRequest) (*dalc.SubmitBlockResponse, error) {
 	// submit the block
 	broadcastResp, err := d.blockSubmitter.SubmitBlock(ctx, blockReq.Block)
