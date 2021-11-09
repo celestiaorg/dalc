@@ -60,7 +60,7 @@ func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq 
 		return &dalc.SubmitBlockResponse{
 			Result: &dalc.DAResponse{
 				Code:    dalc.StatusCode_STATUS_CODE_ERROR,
-				Message: fmt.Sprintf("failed to broadcast tx: code %d", resp.Code),
+				Message: fmt.Sprintf("failed to submit tx: code %d", resp.Code),
 			},
 		}, err
 	}
