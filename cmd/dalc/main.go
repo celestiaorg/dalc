@@ -85,7 +85,7 @@ func startCmd() *cobra.Command {
 			}
 
 			// create the grpc server
-			srv, err := server.New(cfg)
+			srv, err := server.New(cfg, path)
 			if err != nil {
 				return err
 			}
