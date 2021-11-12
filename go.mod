@@ -9,7 +9,7 @@ require (
 	github.com/cosmos/cosmos-sdk v0.44.0
 	github.com/gogo/protobuf v1.3.3
 	github.com/spf13/cobra v1.2.1
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942
 	github.com/tendermint/spm v0.1.7
 	github.com/tendermint/tendermint v0.34.14
 	google.golang.org/grpc v1.41.0
