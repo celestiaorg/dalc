@@ -92,7 +92,9 @@ func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context
 	// get the dah for the block
 	// todo(evan): change the optimint header to include some height for celestia instead of using incorrect optimint height
 	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.Header.Height))
-
+	if err != nil {
+		return nil, err
+	}
 	// todo(evan): update to the latest DASer. note: can't use daser until daser
 	// imports the latest version of celestia-core
 	err = d.node.ShareServ.SharesAvailable(ctx, dah)
@@ -135,6 +137,9 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 	// unmarshal the shares here
 
 	msgs, err := coretypes.ParseMsgs(rawShares)
+	if err != nil {
+		return nil, err
+	}
 	if len(msgs.MessagesList) != 1 {
 		return nil, fmt.Errorf("only expected a single message: got %d", len(msgs.MessagesList))
 	}
