@@ -5,13 +5,16 @@ import (
 	"fmt"
 	"math"
 	"os"
-	"strings"
 
+	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/celestia-node/core"
+	nodecore "github.com/celestiaorg/celestia-node/core"
 	cnode "github.com/celestiaorg/celestia-node/node"
 	"github.com/celestiaorg/dalc/config"
 	"github.com/celestiaorg/dalc/proto/dalc"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	"github.com/celestiaorg/dalc/proto/optimint"
+	"github.com/gogo/protobuf/proto"
+	"github.com/tendermint/spm/cosmoscmd"
 	tmlog "github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/pkg/da"
 	coretypes "github.com/tendermint/tendermint/types"
@@ -21,13 +24,11 @@ import (
 // New creates a grpc server ready to listen for incoming messages from optimint
 func New(cfg config.ServerConfig, nodePath string) (*grpc.Server, error) {
 	logger := tmlog.NewTMLogger(os.Stdout)
-	// todo(evan): handle password or some key protection
-	kr, err := keyring.New("celestia", cfg.KeyringPath, cfg.KeyringBackend, strings.NewReader(""))
-	if err != nil {
-		return nil, err
-	}
 
-	bs, err := newBlockSubmitter(cfg.BlockSubmitterConfig, kr)
+	// set the prefixes for addresses to celes
+	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
+
+	bs, err := newBlockSubmitter(cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -41,6 +42,13 @@ func New(cfg config.ServerConfig, nodePath string) (*grpc.Server, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	coreClient, err := nodecore.NewRemote("tcp", cfg.RPCAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	node.CoreClient = coreClient
 
 	lc := &DataAvailabilityLightClient{
 		logger: logger,
@@ -78,7 +86,7 @@ func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq 
 		return &dalc.SubmitBlockResponse{
 			Result: &dalc.DAResponse{
 				Code:    dalc.StatusCode_STATUS_CODE_ERROR,
-				Message: fmt.Sprintf("failed to submit tx: code %d", resp.Code),
+				Message: fmt.Sprintf("failed to submit tx: code %d: %s", resp.Code, resp.RawLog),
 			},
 		}, err
 	}
@@ -95,8 +103,7 @@ func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context
 	if err != nil {
 		return nil, err
 	}
-	// todo(evan): update to the latest DASer. note: can't use daser until daser
-	// imports the latest version of celestia-core
+
 	err = d.node.ShareServ.SharesAvailable(ctx, dah)
 	switch err {
 	case nil:
@@ -134,7 +141,6 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 	for i, share := range shares {
 		rawShares[i] = share.Data()
 	}
-	// unmarshal the shares here
 
 	msgs, err := coretypes.ParseMsgs(rawShares)
 	if err != nil {
@@ -144,9 +150,18 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 		return nil, fmt.Errorf("only expected a single message: got %d", len(msgs.MessagesList))
 	}
 
-	// parse the message back into an optimint block
+	var block optimint.Block
+	err = proto.Unmarshal(msgs.MessagesList[0].Data, &block)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	return &dalc.RetrieveBlockResponse{
+		Result: &dalc.DAResponse{
+			Code: dalc.StatusCode_STATUS_CODE_SUCCESS,
+		},
+		Block: &block,
+	}, nil
 }
 
 // getDAH is a stop gap measure until we have header service implemented in celestia-node. This should be deleted ASAP

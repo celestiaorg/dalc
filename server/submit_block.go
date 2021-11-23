@@ -2,7 +2,9 @@ package server
 
 import (
 	"context"
+	"strings"
 
+	"github.com/celestiaorg/celestia-app/app"
 	apptypes "github.com/celestiaorg/celestia-app/x/payment/types"
 	"github.com/celestiaorg/dalc/config"
 	"github.com/celestiaorg/dalc/proto/optimint"
@@ -11,21 +13,31 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/gogo/protobuf/proto"
+	"github.com/tendermint/spm/cosmoscmd"
 	"github.com/tendermint/tendermint/pkg/consts"
 	"google.golang.org/grpc"
 )
 
-func newBlockSubmitter(cfg config.BlockSubmitterConfig, ring keyring.Keyring) (blockSubmitter, error) {
+func newBlockSubmitter(cfg config.ServerConfig) (blockSubmitter, error) {
 	client, err := grpc.Dial(cfg.RPCAddress, grpc.WithInsecure())
 	if err != nil {
 		return blockSubmitter{}, err
 	}
 
+	ring, err := keyring.New("", cfg.KeyringBackend, cfg.KeyringPath, strings.NewReader(""))
+	if err != nil {
+		return blockSubmitter{}, err
+	}
+
+	encCfg := cosmoscmd.MakeEncodingConfig(app.ModuleBasics)
+
 	signer := apptypes.NewKeyringSigner(ring, cfg.KeyringAccName, cfg.ChainID)
+
 	return blockSubmitter{
-		config:      cfg,
+		config:      cfg.BlockSubmitterConfig,
 		signer:      signer,
 		celestiaRPC: client,
+		encCfg:      encCfg,
 	}, nil
 }
 
@@ -33,6 +45,8 @@ func newBlockSubmitter(cfg config.BlockSubmitterConfig, ring keyring.Keyring) (b
 type blockSubmitter struct {
 	config config.BlockSubmitterConfig
 	signer *apptypes.KeyringSigner
+
+	encCfg cosmoscmd.EncodingConfig
 
 	celestiaRPC *grpc.ClientConn
 }
@@ -74,7 +88,7 @@ func (bs *blockSubmitter) SubmitBlock(ctx context.Context, block *optimint.Block
 		return nil, err
 	}
 
-	rawTx, err := bs.signer.EncodeTx(wirePFMtx)
+	rawTx, err := bs.encCfg.TxConfig.TxEncoder()(wirePFMtx)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +98,7 @@ func (bs *blockSubmitter) SubmitBlock(ctx context.Context, block *optimint.Block
 	return txClient.BroadcastTx(
 		ctx,
 		&tx.BroadcastTxRequest{
-			Mode:    tx.BroadcastMode(bs.config.BroadcastMode),
+			Mode:    tx.BroadcastMode(2),
 			TxBytes: rawTx,
 		},
 	)
@@ -107,5 +121,6 @@ func (bs *blockSubmitter) newTxBuilder() client.TxBuilder {
 	fee := sdk.Coins{sdk.NewCoin(bs.config.Denom, sdk.NewInt(int64(bs.config.FeeAmount)))}
 	builder.SetFeeAmount(fee)
 	builder.SetGasLimit(bs.config.GasLimit)
+
 	return builder
 }
