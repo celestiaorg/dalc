@@ -84,19 +84,20 @@ type BlockSubmitterConfig struct {
 	// Denomination is the token denomination of the celestia chain being used
 	// for a data availability layer. Defaults to "tia"
 	Denom string `toml:"denomination"`
-
-	// RPCAddress is the rpc address to submit celestia transactions to
+	// RPCAddress is the rpc address to submit celestia transactions to and
+	// become a light client of
 	RPCAddress string `toml:"celestia-rpc-addr"`
 	// ChainID is the chainID of the celstia chain being used as a data availability layer
 	ChainID string `toml:"chain-id"`
 	// Timeout is the amount of time in seconds waited for a tx to be included in a block. Defaults to 180 seconds
 	Timeout time.Duration `toml:"timeout"` // todo: actually implement a timeout
-
 	// BroadcastMode determines what the light client does after submitting a
 	// WirePayForMessage. 0 Unspecified, 1 Block until included in a block, 2
-	// Syncronous, 3 Asyncronous. Defualts to 1
+	// Syncronous, 3 Asyncronous. Defualts to 1 Note: due to the difference
+	// between WirePayForMessage and PayForMessage, celestia-core currently can
+	// not properly notify the dalc that the WirePayForMessage was included in
+	// the block, so we are defaulting to 2 at the moment.
 	BroadcastMode int `toml:"broadcast-mode"` // see https://github.com/celestiaorg/cosmos-sdk/blob/51997c8de9c54e279f303a556ab59ea5dd28f1e2/types/tx/service.pb.go#L71-L83 // nolint: lll
-
 	// KeyringAccName is the name of the account registered in the keyring
 	// for the `From` address field. Defaults to "test"
 	KeyringAccName string `toml:"keyring-account-name"`
@@ -110,9 +111,10 @@ func DefaultBlockSubmitterConfig() BlockSubmitterConfig {
 		FeeAmount:      1,
 		Denom:          "tia",
 		RPCAddress:     "127.0.0.1:9090",
-		KeyringAccName: "test",
+		KeyringAccName: "user2",
 		BroadcastMode:  1,
 		Timeout:        time.Minute * 3,
+		ChainID:        "test",
 	}
 }
 
@@ -129,8 +131,8 @@ type KeyringConfig struct {
 // of the ServerConfig
 func DefaultKeyringConfig() KeyringConfig {
 	return KeyringConfig{
-		KeyringBackend: "os",
-		KeyringPath:    DefaultConfigPath,
+		KeyringBackend: "test",
+		KeyringPath:    "~/.celestia-app",
 	}
 }
 

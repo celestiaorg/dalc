@@ -40,7 +40,7 @@ func TestBuildPFM(t *testing.T) {
 func testBlockSubmitter(t *testing.T) (blockSubmitter, keyring.Keyring) {
 	t.Helper()
 	kr := generateKeyring(t)
-	testBS, err := newBlockSubmitter(config.DefaultBlockSubmitterConfig(), kr)
+	testBS, err := newBlockSubmitter(config.DefaultServerConfig())
 	require.NoError(t, err)
 	return testBS, kr
 }

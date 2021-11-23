@@ -6,6 +6,7 @@ require (
 	github.com/BurntSushi/toml v0.4.1
 	github.com/celestiaorg/celestia-app v0.0.0-00010101000000-000000000000
 	github.com/celestiaorg/celestia-node v0.0.0-20211110181526-447aac929993
+	github.com/celestiaorg/nmt v0.8.0
 	github.com/cosmos/cosmos-sdk v0.44.0
 	github.com/gogo/protobuf v1.3.3
 	github.com/spf13/cobra v1.2.1
@@ -27,8 +28,8 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/btcsuite/btcd v0.22.0-beta // indirect
 	github.com/celestiaorg/go-leopard v0.1.0 // indirect
+	github.com/celestiaorg/go-libp2p-messenger v0.1.0 // indirect
 	github.com/celestiaorg/merkletree v0.0.0-20210714075610-a84dc3ddbbe4 // indirect
-	github.com/celestiaorg/nmt v0.7.0 // indirect
 	github.com/celestiaorg/rsmt2d v0.3.0 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
@@ -241,11 +242,11 @@ require (
 
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.1.7-0.20210622111912-ef00f8ac3d76
-	github.com/celestiaorg/celestia-app => github.com/celestiaorg/lazyledger-app v0.0.1
+	github.com/celestiaorg/celestia-app => github.com/celestiaorg/lazyledger-app v0.0.2-0.20211122092644-1fcccc414127
 	// todo evan use updated version of celestia-node after PRs are merged
-	github.com/celestiaorg/celestia-node => github.com/celestiaorg/celestia-node v0.0.0-20211110181526-447aac929993
+	github.com/celestiaorg/celestia-node => github.com/celestiaorg/celestia-node v0.0.0-20211119110509-677e30d5ece9
 	github.com/cosmos/cosmos-sdk => github.com/celestiaorg/cosmos-sdk v0.44.1-celestia
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/tendermint/tendermint v0.34.14 => github.com/celestiaorg/celestia-core v0.34.14-celestia.0.20211112012647-c93ad490fa4c
+	github.com/tendermint/tendermint v0.34.14 => github.com/celestiaorg/celestia-core v0.34.14-celestia.0.20211121093520-199a1e4232ac
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
