@@ -19,7 +19,7 @@ func main() {
 	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
 
 	root.AddCommand(
-		keys.Commands(config.DefaultConfigPath),
+		keys.Commands(config.ConfigPath(config.HomeDir)),
 		initCmd(),
 		startCmd(),
 	)
@@ -41,11 +41,11 @@ func rootCmd() *cobra.Command {
 }
 
 func initCmd() *cobra.Command {
-	const pathFlag = "path"
+	const homeFlag = "home"
 	command := &cobra.Command{
 		Use: "init",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			path, err := cmd.Flags().GetString(pathFlag)
+			path, err := cmd.Flags().GetString(homeFlag)
 			if err != nil {
 				return err
 			}
@@ -64,28 +64,28 @@ func initCmd() *cobra.Command {
 			return nil
 		},
 	}
-	command.Flags().String(pathFlag, config.DefaultConfigPath, "specific the home path")
+	command.Flags().String(homeFlag, config.HomeDir, "specific the home path")
 	return command
 }
 
 func startCmd() *cobra.Command {
-	const pathFlag = "path"
+	const homeFlag = "home"
 	command := &cobra.Command{
 		Use: "start",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// load the config
-			path, err := cmd.Flags().GetString(pathFlag)
+			home, err := cmd.Flags().GetString(homeFlag)
 			if err != nil {
 				return err
 			}
 
-			cfg, err := config.Load(path)
+			cfg, err := config.Load(config.ConfigPath(home))
 			if err != nil {
 				return err
 			}
 
 			// create the grpc server
-			srv, err := server.New(cfg, path)
+			srv, err := server.New(cfg, home+"/.celestia-light")
 			if err != nil {
 				return err
 			}
@@ -95,11 +95,11 @@ func startCmd() *cobra.Command {
 			if err != nil {
 				log.Panic(err)
 			}
-			log.Println("Listening on:", lis.Addr())
+			log.Println("DALC listening on:", lis.Addr())
 
 			return srv.Serve(lis)
 		},
 	}
-	command.Flags().String(pathFlag, config.DefaultConfigPath, "specific the home path")
+	command.Flags().String(homeFlag, config.HomeDir, "specific the home path")
 	return command
 }

@@ -6,7 +6,6 @@ import (
 	"math"
 	"os"
 
-	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/celestia-node/core"
 	nodecore "github.com/celestiaorg/celestia-node/core"
 	cnode "github.com/celestiaorg/celestia-node/node"
@@ -14,7 +13,6 @@ import (
 	"github.com/celestiaorg/dalc/proto/dalc"
 	"github.com/celestiaorg/dalc/proto/optimint"
 	"github.com/gogo/protobuf/proto"
-	"github.com/tendermint/spm/cosmoscmd"
 	tmlog "github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/pkg/da"
 	coretypes "github.com/tendermint/tendermint/types"
@@ -26,7 +24,7 @@ func New(cfg config.ServerConfig, nodePath string) (*grpc.Server, error) {
 	logger := tmlog.NewTMLogger(os.Stdout)
 
 	// set the prefixes for addresses to celes
-	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
+	// cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
 
 	bs, err := newBlockSubmitter(cfg)
 	if err != nil {
