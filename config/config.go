@@ -15,7 +15,7 @@ const (
 )
 
 var (
-	DefaultConfigPath string
+	HomeDir string
 )
 
 func init() {
@@ -23,7 +23,11 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	DefaultConfigPath = fmt.Sprintf("%s/%s/", homeDir, DefaultDirName)
+	HomeDir = homeDir
+}
+
+func ConfigPath(home string) string {
+	return fmt.Sprintf("%s/%s/%s", home, DefaultDirName, ConfigFileName)
 }
 
 type ServerConfig struct {
@@ -49,7 +53,7 @@ func (cfg ServerConfig) Save(path string) error {
 // Load attempts to load the dalc.toml file from the provided path
 func Load(path string) (ServerConfig, error) {
 	var cfg ServerConfig
-	rawCfg, err := os.ReadFile(path + ConfigFileName)
+	rawCfg, err := os.ReadFile(path)
 	if err != nil {
 		return cfg, err
 	}
@@ -63,6 +67,7 @@ func Load(path string) (ServerConfig, error) {
 // DefaultServerConfig returns the default ServerConfig
 func DefaultServerConfig() ServerConfig {
 	return ServerConfig{
+		BaseConfig:           DefaultBaseConfig(),
 		BlockSubmitterConfig: DefaultBlockSubmitterConfig(),
 		KeyringConfig:        DefaultKeyringConfig(),
 	}
@@ -71,6 +76,12 @@ func DefaultServerConfig() ServerConfig {
 // BaseConfig contains the basic configurations required for the grpc server
 type BaseConfig struct {
 	ListenAddr string `toml:"laddr"`
+}
+
+func DefaultBaseConfig() BaseConfig {
+	return BaseConfig{
+		ListenAddr: "127.0.0.1:4200",
+	}
 }
 
 // BlockSubmitterConfig holds the settings relevant for submitting a block to Celestia
@@ -111,7 +122,7 @@ func DefaultBlockSubmitterConfig() BlockSubmitterConfig {
 		FeeAmount:      1,
 		Denom:          "tia",
 		RPCAddress:     "127.0.0.1:9090",
-		KeyringAccName: "user2",
+		KeyringAccName: "user1",
 		BroadcastMode:  1,
 		Timeout:        time.Minute * 3,
 		ChainID:        "test",

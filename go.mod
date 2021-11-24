@@ -95,6 +95,7 @@ require (
 	github.com/ipfs/go-ipfs-exchange-interface v0.0.1 // indirect
 	github.com/ipfs/go-ipfs-exchange-offline v0.0.1 // indirect
 	github.com/ipfs/go-ipfs-pq v0.0.2 // indirect
+	github.com/ipfs/go-ipfs-routing v0.1.0 // indirect
 	github.com/ipfs/go-ipfs-util v0.0.2 // indirect
 	github.com/ipfs/go-ipld-cbor v0.0.5 // indirect
 	github.com/ipfs/go-ipld-format v0.2.0 // indirect
@@ -134,6 +135,7 @@ require (
 	github.com/libp2p/go-libp2p-loggables v0.1.0 // indirect
 	github.com/libp2p/go-libp2p-mplex v0.4.1 // indirect
 	github.com/libp2p/go-libp2p-nat v0.0.6 // indirect
+	github.com/libp2p/go-libp2p-netutil v0.1.0 // indirect
 	github.com/libp2p/go-libp2p-noise v0.2.2 // indirect
 	github.com/libp2p/go-libp2p-peerstore v0.2.8 // indirect
 	github.com/libp2p/go-libp2p-pnet v0.2.0 // indirect
@@ -141,6 +143,7 @@ require (
 	github.com/libp2p/go-libp2p-record v0.1.3 // indirect
 	github.com/libp2p/go-libp2p-routing-helpers v0.2.3 // indirect
 	github.com/libp2p/go-libp2p-swarm v0.5.3 // indirect
+	github.com/libp2p/go-libp2p-testing v0.4.2 // indirect
 	github.com/libp2p/go-libp2p-tls v0.2.0 // indirect
 	github.com/libp2p/go-libp2p-transport-upgrader v0.4.6 // indirect
 	github.com/libp2p/go-libp2p-yamux v0.5.4 // indirect
@@ -222,7 +225,7 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/dig v1.12.0 // indirect
-	go.uber.org/fx v1.14.2 // indirect
+	go.uber.org/fx v1.15.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.19.0 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
@@ -244,7 +247,7 @@ replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.1.7-0.20210622111912-ef00f8ac3d76
 	github.com/celestiaorg/celestia-app => github.com/celestiaorg/lazyledger-app v0.0.2-0.20211122092644-1fcccc414127
 	// todo evan use updated version of celestia-node after PRs are merged
-	github.com/celestiaorg/celestia-node => github.com/celestiaorg/celestia-node v0.0.0-20211119110509-677e30d5ece9
+	github.com/celestiaorg/celestia-node => github.com/celestiaorg/celestia-node v0.0.0-20211123164444-7445641944f0
 	github.com/cosmos/cosmos-sdk => github.com/celestiaorg/cosmos-sdk v0.44.1-celestia
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/tendermint/tendermint v0.34.14 => github.com/celestiaorg/celestia-core v0.34.14-celestia.0.20211121093520-199a1e4232ac
