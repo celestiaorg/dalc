@@ -38,8 +38,8 @@ type ServerConfig struct {
 }
 
 // Save saves the server config to a specific path
-func (cfg ServerConfig) Save(path string) error {
-	cfgFile, err := os.OpenFile(path+ConfigFileName, os.O_CREATE|os.O_RDWR, 0660)
+func (cfg ServerConfig) Save(home string) error {
+	cfgFile, err := os.OpenFile(ConfigPath(home), os.O_CREATE|os.O_RDWR, 0660)
 	if err != nil {
 		return err
 	}
@@ -80,7 +80,7 @@ type BaseConfig struct {
 
 func DefaultBaseConfig() BaseConfig {
 	return BaseConfig{
-		ListenAddr: "127.0.0.1:4200",
+		ListenAddr: "0.0.0.0:4200",
 	}
 }
 

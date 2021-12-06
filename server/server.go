@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"strings"
 
+	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/celestia-node/core"
 	nodecore "github.com/celestiaorg/celestia-node/core"
 	cnode "github.com/celestiaorg/celestia-node/node"
@@ -13,6 +15,7 @@ import (
 	"github.com/celestiaorg/dalc/proto/dalc"
 	"github.com/celestiaorg/dalc/proto/optimint"
 	"github.com/gogo/protobuf/proto"
+	"github.com/tendermint/spm/cosmoscmd"
 	tmlog "github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/pkg/da"
 	coretypes "github.com/tendermint/tendermint/types"
@@ -24,7 +27,7 @@ func New(cfg config.ServerConfig, nodePath string) (*grpc.Server, error) {
 	logger := tmlog.NewTMLogger(os.Stdout)
 
 	// set the prefixes for addresses to celes
-	// cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
+	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
 
 	bs, err := newBlockSubmitter(cfg)
 	if err != nil {
@@ -41,7 +44,7 @@ func New(cfg config.ServerConfig, nodePath string) (*grpc.Server, error) {
 		return nil, err
 	}
 
-	coreClient, err := nodecore.NewRemote("tcp", cfg.RPCAddress)
+	coreClient, err := nodecore.NewRemote("tcp", strings.Replace(cfg.RPCAddress, "9090", "26657", -1))
 	if err != nil {
 		return nil, err
 	}
@@ -130,8 +133,9 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 	}
 
 	// todo include namespace inside the request, not preconfigured
-	shares, err := d.node.ShareServ.GetSharesByNamespace(ctx, dah, []byte{0, 1, 2, 3, 4, 5, 6, 7})
+	shares, err := d.node.ShareServ.GetSharesByNamespace(ctx, dah, []byte{1, 1, 1, 1, 1, 1, 1, 1})
 	if err != nil {
+		fmt.Println("error here2", err)
 		return nil, err
 	}
 
@@ -142,6 +146,7 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 
 	msgs, err := coretypes.ParseMsgs(rawShares)
 	if err != nil {
+		fmt.Println("error here3", err)
 		return nil, err
 	}
 	if len(msgs.MessagesList) != 1 {
@@ -151,6 +156,7 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 	var block optimint.Block
 	err = proto.Unmarshal(msgs.MessagesList[0].Data, &block)
 	if err != nil {
+		fmt.Println("error here4", err)
 		return nil, err
 	}
 

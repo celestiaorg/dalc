@@ -50,7 +50,7 @@ func initCmd() *cobra.Command {
 				return err
 			}
 
-			err = os.MkdirAll(path, 0664)
+			err = os.MkdirAll(path+"/"+config.DefaultDirName, 0777)
 			if err != nil {
 				return err
 			}

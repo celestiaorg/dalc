@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/celestiaorg/celestia-app/app"
 	apptypes "github.com/celestiaorg/celestia-app/x/payment/types"
@@ -19,7 +20,7 @@ import (
 )
 
 func newBlockSubmitter(cfg config.ServerConfig) (blockSubmitter, error) {
-	client, err := grpc.Dial(cfg.RPCAddress, grpc.WithInsecure())
+	client, err := grpc.Dial(cfg.RPCAddress, grpc.WithInsecure(), grpc.WithTimeout(time.Minute*2))
 	if err != nil {
 		return blockSubmitter{}, err
 	}
