@@ -246,8 +246,7 @@ require (
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.1.7-0.20210622111912-ef00f8ac3d76
 	github.com/celestiaorg/celestia-app => github.com/celestiaorg/lazyledger-app v0.0.2-0.20211122092644-1fcccc414127
-	// todo evan use updated version of celestia-node after PRs are merged
-	github.com/celestiaorg/celestia-node => github.com/celestiaorg/celestia-node v0.0.0-20211123164444-7445641944f0
+	github.com/celestiaorg/celestia-node => github.com/celestiaorg/celestia-node v0.0.0-20211202170253-c669466ad8a9
 	github.com/cosmos/cosmos-sdk => github.com/celestiaorg/cosmos-sdk v0.44.1-celestia
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/tendermint/tendermint v0.34.14 => github.com/celestiaorg/celestia-core v0.34.14-celestia.0.20211121093520-199a1e4232ac
