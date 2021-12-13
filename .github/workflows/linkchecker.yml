@@ -10,4 +10,5 @@ jobs:
       - uses: actions/checkout@master
       - uses: gaurav-nelson/github-action-markdown-link-check@1.0.13
         with:
+          config-file: '.mlc_config.json'
           folder-path: "docs"
