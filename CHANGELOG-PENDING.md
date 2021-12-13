@@ -19,3 +19,7 @@ Month, DD, YYYY
 ### BUG FIXES
 
 - [go package] (Link to PR) Description @username
+
+### MISC
+
+- Update lintchecker.yml GH action to not run on a CRON schedule until docs/ dir is created
