@@ -22,4 +22,5 @@ Month, DD, YYYY
 
 ### MISC
 
-- Update lintchecker.yml GH action to not run on a CRON schedule until docs/ dir is created
+- Add workflow_dispatch option to lintchecker GH action
+- Create placeholder init.md doc to be checked by lintchecker gh action
