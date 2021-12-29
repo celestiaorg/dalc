@@ -19,3 +19,8 @@ Month, DD, YYYY
 ### BUG FIXES
 
 - [go package] (Link to PR) Description @username
+
+### MISC
+
+- Add workflow_dispatch option to lintchecker GH action
+- Create placeholder init.md doc to be checked by lintchecker gh action
