@@ -34,11 +34,10 @@ func (hm *HeightMapper) Save(optimintHeight, celestiaHeight int64) error {
 	strOptiHeight := fmt.Sprintf("%d", optimintHeight)
 
 	if cHeight, has := hm.Heights[strOptiHeight]; has {
-		return fmt.Errorf(
-			"optimint block at height %s already saved on celestia at celestia height %d",
-			strOptiHeight,
-			cHeight,
-		)
+		return PreExistingBlockMappingError{
+			CelestiaBlockHeight: cHeight,
+			OptimintBlockHeight: optimintHeight,
+		}
 	}
 	hm.Heights[strOptiHeight] = celestiaHeight
 	return nil

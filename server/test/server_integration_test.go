@@ -5,7 +5,6 @@ package test
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"log"
 	"net"
 	"testing"
@@ -16,6 +15,7 @@ import (
 	"github.com/celestiaorg/dalc/proto/dalc"
 	"github.com/celestiaorg/dalc/proto/optimint"
 	"github.com/celestiaorg/dalc/server"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/spm/cosmoscmd"
 	"google.golang.org/grpc"
@@ -66,27 +66,30 @@ func TestIntegration(t *testing.T) {
 	// set the global client
 	dalcClient = dalc.NewDALCServiceClient(conn)
 
-	_ = testSubmitBlock(t)
-	testBlockAvailability(t, 1)
+	optimintBlock := testSubmitBlock(t)
 
-	// req := dalc.RetrieveBlockRequest{
-	// 	Height: 8,
-	// }
-	// resp, err := dalcClient.RetrieveBlock(context.TODO(), &req)
-	// require.NoError(t, err)
+	testBlockAvailability(t, optimintBlock.Header)
 
-	// assert.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
-
-	// assert.Equal(t, block, resp.Block)
+	req := dalc.RetrieveBlockRequest{
+		Height: optimintBlock.Header.Height,
+	}
+	resp, err := dalcClient.RetrieveBlock(context.TODO(), &req)
+	require.NoError(t, err)
+	assert.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
+	assert.Equal(t, optimintBlock, resp.Block)
 	srv.Stop()
 }
 
-func testBlockAvailability(t *testing.T, height uint64) {
-	resp, err := dalcClient.CheckBlockAvailability(context.TODO(), &dalc.CheckBlockAvailabilityRequest{})
-	fmt.Println("this error", err)
-	fmt.Println(resp)
-	// hash := resp.Block.Header.DataHash
-	// assert.Greater(t, len(hash), 0)
+func testBlockAvailability(t *testing.T, header *optimint.Header) {
+	resp, err := dalcClient.CheckBlockAvailability(
+		context.TODO(),
+		&dalc.CheckBlockAvailabilityRequest{
+			Header: header,
+		},
+	)
+	require.NoError(t, err)
+	assert.True(t, resp.DataAvailable)
+	assert.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
 }
 
 func testSubmitBlock(t *testing.T) *optimint.Block {
@@ -114,5 +117,12 @@ func testSubmitBlock(t *testing.T) *optimint.Block {
 }
 
 func testRetrieveBlock(t *testing.T, block *optimint.Block) {
+	req := &dalc.RetrieveBlockRequest{
+		Height: block.Header.Height,
+	}
+
+	resp, err := dalcClient.RetrieveBlock(context.TODO(), req)
+	require.NoError(t, err)
+	require.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
 
 }

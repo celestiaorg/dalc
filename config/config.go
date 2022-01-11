@@ -80,11 +80,13 @@ func DefaultServerConfig() ServerConfig {
 // BaseConfig contains the basic configurations required for the grpc server
 type BaseConfig struct {
 	ListenAddr string `toml:"laddr"`
+	Namespace  string `toml:"namespace"`
 }
 
 func DefaultBaseConfig() BaseConfig {
 	return BaseConfig{
 		ListenAddr: "0.0.0.0:4200",
+		Namespace:  "0102030405060708",
 	}
 }
 

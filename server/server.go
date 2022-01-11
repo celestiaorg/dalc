@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"math"
 	"os"
@@ -26,7 +27,7 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 	logger := tmlog.NewTMLogger(os.Stdout)
 
 	// load the height map
-	hm, err := HeightMapperFromFile(configPath + "/height_map.json")
+	hm, err := HeightMapperFromFile("/home/evan/.dalc" + "/height_map.json")
 	if err != nil {
 		return nil, err
 	}
@@ -67,10 +68,15 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 
 	node.CoreClient = coreClient
 
-	lc := &DataAvailabilityLightClient{
-		logger:       logger,
-		heightMapper: hm,
+	namespace, err := hex.DecodeString(cfg.Namespace)
+	if err != nil {
+		return nil, err
+	}
 
+	lc := &DataAvailabilityLightClient{
+		logger:         logger,
+		heightMapper:   hm,
+		namespace:      namespace,
 		blockSubmitter: bs,
 		node:           node,
 	}
@@ -84,6 +90,7 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 type DataAvailabilityLightClient struct {
 	logger tmlog.Logger
 
+	namespace      []byte
 	heightMapper   HeightMapper
 	blockSubmitter blockSubmitter
 	node           *cnode.Node
@@ -91,6 +98,15 @@ type DataAvailabilityLightClient struct {
 
 // SubmitBlock posts an optimint block to celestia
 func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq *dalc.SubmitBlockRequest) (*dalc.SubmitBlockResponse, error) {
+	// check if the block we're trying to submit already has a celestia height associated with it
+	optimintHeight := int64(blockReq.Block.Header.Height)
+	if cHeight, has := d.heightMapper.Search(optimintHeight); has {
+		return nil, PreExistingBlockMappingError{
+			CelestiaBlockHeight: cHeight,
+			OptimintBlockHeight: optimintHeight,
+		}
+	}
+
 	// submit the block
 	broadcastResp, err := d.blockSubmitter.SubmitBlock(ctx, blockReq.Block)
 	if err != nil {
@@ -110,15 +126,29 @@ func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq 
 		}, err
 	}
 
+	err = d.heightMapper.Save(int64(blockReq.Block.Header.Height), resp.Height)
+	if err != nil {
+		// TODO: we proabably need to do something more drastic than warn if a
+		// block we just submitted already exists in the height mapper
+		d.logger.Error(err.Error())
+		return nil, err
+	}
+
 	d.logger.Info("Submitted block to celstia", "height", resp.Height, "gas used", resp.GasUsed, "hash", resp.TxHash)
 	return &dalc.SubmitBlockResponse{Result: &dalc.DAResponse{Code: dalc.StatusCode_STATUS_CODE_SUCCESS}}, nil
 }
 
 // CheckBlockAvailability samples shares from the underlying data availability layer
 func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context, req *dalc.CheckBlockAvailabilityRequest) (*dalc.CheckBlockAvailabilityResponse, error) {
+	// check if the block we're trying to submit already has a celestia height associated with it
+	optimintHeight := int64(req.Header.Height)
+	celestiaHeight, has := d.heightMapper.Search(optimintHeight)
+	if !has {
+		return nil, NoAssociatedBlockError{optimintHeight}
+	}
+
 	// get the dah for the block
-	// todo(evan): change the optimint header to include some height for celestia instead of using incorrect optimint height
-	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.Header.Height))
+	dah, err := getDAH(ctx, d.node.CoreClient, celestiaHeight)
 	if err != nil {
 		return nil, err
 	}
@@ -144,21 +174,22 @@ func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context
 }
 
 func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *dalc.RetrieveBlockRequest) (*dalc.RetrieveBlockResponse, error) {
-	// todo(evan) don't use optimint heigt use correct celestia height
+	// check if the block we're trying to submit already has a celestia height associated with it
+	optimintHeight := int64(req.Height)
+	if _, has := d.heightMapper.Search(optimintHeight); !has {
+		return nil, NoAssociatedBlockError{optimintHeight}
+	}
+
 	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.Height))
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println("got dah", dah)
-
 	// todo include namespace inside the request, not preconfigured
-	shares, err := d.node.ShareServ.GetSharesByNamespace(ctx, dah, []byte{1, 1, 1, 1, 1, 1, 1, 1})
+	shares, err := d.node.ShareServ.GetSharesByNamespace(ctx, dah, d.namespace)
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("got shares", shares)
 
 	rawShares := make([][]byte, len(shares))
 	for i, share := range shares {
@@ -201,7 +232,7 @@ func getDAH(ctx context.Context, client core.Client, hate int64) (*da.DataAvaila
 
 	eds, err := da.ExtendShares(squareSize, rawShares)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	dah := da.NewDataAvailabilityHeader(eds)
