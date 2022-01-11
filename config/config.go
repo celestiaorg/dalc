@@ -30,6 +30,10 @@ func ConfigPath(home string) string {
 	return fmt.Sprintf("%s/%s/%s", home, DefaultDirName, ConfigFileName)
 }
 
+func DirectoryPath(home string) string {
+	return fmt.Sprintf("%s/%s", home, DefaultDirName)
+}
+
 type ServerConfig struct {
 	BaseConfig           `toml:"base"`
 	BlockSubmitterConfig `toml:"block-submitter"`
@@ -126,7 +130,7 @@ func DefaultBlockSubmitterConfig() BlockSubmitterConfig {
 		Denom:          "tia",
 		GRPCAddress:    "127.0.0.1:9090",
 		RestRPCAddress: "127.0.0.1:26657",
-		KeyringAccName: "user1",
+		KeyringAccName: "dalc-user",
 		BroadcastMode:  1,
 		Timeout:        time.Minute * 3,
 		ChainID:        "test",

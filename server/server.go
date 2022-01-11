@@ -6,7 +6,6 @@ import (
 	"math"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/celestiaorg/celestia-node/core"
 	nodecore "github.com/celestiaorg/celestia-node/core"
@@ -23,12 +22,18 @@ import (
 )
 
 // New creates a grpc server ready to listen for incoming messages from optimint
-func New(cfg config.ServerConfig, nodePath string) (*grpc.Server, error) {
+func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, error) {
 	logger := tmlog.NewTMLogger(os.Stdout)
+
+	// load the height map
+	hm, err := HeightMapperFromFile(configPath + "/height_map.json")
+	if err != nil {
+		return nil, err
+	}
 
 	// connect to a celestia full node to submit txs/query todo: change when
 	// celestia-node does this for us
-	client, err := grpc.Dial(cfg.GRPCAddress, grpc.WithInsecure(), grpc.WithTimeout(time.Minute*2))
+	client, err := grpc.Dial(cfg.GRPCAddress, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +68,8 @@ func New(cfg config.ServerConfig, nodePath string) (*grpc.Server, error) {
 	node.CoreClient = coreClient
 
 	lc := &DataAvailabilityLightClient{
-		logger: logger,
+		logger:       logger,
+		HeightMapper: hm,
 
 		blockSubmitter: bs,
 		node:           node,
@@ -78,6 +84,7 @@ func New(cfg config.ServerConfig, nodePath string) (*grpc.Server, error) {
 type DataAvailabilityLightClient struct {
 	logger tmlog.Logger
 
+	heightMapper   HeightMapper
 	blockSubmitter blockSubmitter
 	node           *cnode.Node
 }
@@ -143,12 +150,15 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 		return nil, err
 	}
 
+	fmt.Println("got dah", dah)
+
 	// todo include namespace inside the request, not preconfigured
 	shares, err := d.node.ShareServ.GetSharesByNamespace(ctx, dah, []byte{1, 1, 1, 1, 1, 1, 1, 1})
 	if err != nil {
-		fmt.Println("error here2", err)
 		return nil, err
 	}
+
+	fmt.Println("got shares", shares)
 
 	rawShares := make([][]byte, len(shares))
 	for i, share := range shares {
@@ -157,7 +167,6 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 
 	msgs, err := coretypes.ParseMsgs(rawShares)
 	if err != nil {
-		fmt.Println("error here3", err)
 		return nil, err
 	}
 	if len(msgs.MessagesList) != 1 {
@@ -167,7 +176,6 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 	var block optimint.Block
 	err = proto.Unmarshal(msgs.MessagesList[0].Data, &block)
 	if err != nil {
-		fmt.Println("error here4", err)
 		return nil, err
 	}
 

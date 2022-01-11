@@ -8,16 +8,16 @@ import (
 	"sync"
 )
 
-// HeightMap keeps track of which optimint blocks where posted to which celestia
+// HeightMapper keeps track of which optimint blocks where posted to which celestia
 // blocks
-type HeightMap struct {
+type HeightMapper struct {
 	Heights map[string]int64
 	mut     *sync.RWMutex
 }
 
 // Search returns the celestia height of which the optimint blocks were stored,
 // if it exists
-func (hm *HeightMap) Search(optimintHeight int64) (celestiaHeight int64, has bool) {
+func (hm *HeightMapper) Search(optimintHeight int64) (celestiaHeight int64, has bool) {
 	strOptiHeight := fmt.Sprintf("%d", optimintHeight)
 	hm.mut.RLock()
 	defer hm.mut.RUnlock()
@@ -27,7 +27,7 @@ func (hm *HeightMap) Search(optimintHeight int64) (celestiaHeight int64, has boo
 
 // Save records the mapping between optimint block height and the celestia block
 // at which the optimint block exists
-func (hm *HeightMap) Save(optimintHeight, celestiaHeight int64) error {
+func (hm *HeightMapper) Save(optimintHeight, celestiaHeight int64) error {
 	hm.mut.Lock()
 	defer hm.mut.Unlock()
 
@@ -44,33 +44,33 @@ func (hm *HeightMap) Save(optimintHeight, celestiaHeight int64) error {
 	return nil
 }
 
-// Encode marshals the HeightMap using a json format
-func (hm *HeightMap) Encode(w io.Writer) error {
+// Encode marshals the HeightMapper using a json format
+func (hm *HeightMapper) Encode(w io.Writer) error {
 	return json.NewEncoder(w).Encode(hm.Heights)
 }
 
-// DecodeHeightMap unmarshals a json formatted HeightMap
-func DecodeHeightMap(r io.Reader) (HeightMap, error) {
+// DecodeHeightMapper unmarshals a json formatted HeightMapper
+func DecodeHeightMapper(r io.Reader) (HeightMapper, error) {
 	heights := make(map[string]int64)
 	err := json.NewDecoder(r).Decode(&heights)
 	if err != nil {
-		return HeightMap{}, err
+		return HeightMapper{}, err
 	}
-	return HeightMap{
+	return HeightMapper{
 		Heights: heights,
 		mut:     &sync.RWMutex{},
 	}, nil
 }
 
-func HeightMapFromFile(path string) (HeightMap, error) {
+func HeightMapperFromFile(path string) (HeightMapper, error) {
 	file, err := os.Open(path)
 	if err != nil {
-		return HeightMap{}, err
+		return HeightMapper{}, err
 	}
-	return DecodeHeightMap(file)
+	return DecodeHeightMapper(file)
 }
 
-func (hm *HeightMap) SaveToFile(path string) error {
+func (hm *HeightMapper) SaveToFile(path string) error {
 	file, err := os.Open(path)
 	if err != nil {
 		return err

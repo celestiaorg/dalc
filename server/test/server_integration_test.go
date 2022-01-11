@@ -1,21 +1,23 @@
-// //go:build integrations
+// // go:build integration
 
 package test
 
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"testing"
 	"time"
 
+	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/dalc/config"
 	"github.com/celestiaorg/dalc/proto/dalc"
 	"github.com/celestiaorg/dalc/proto/optimint"
 	"github.com/celestiaorg/dalc/server"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/tendermint/spm/cosmoscmd"
 	"google.golang.org/grpc"
 )
 
@@ -27,11 +29,21 @@ var (
 func TestIntegration(t *testing.T) {
 	// start a new dalc server
 	cfg := config.DefaultServerConfig()
-	srv, err := server.New(cfg, "~/.celestia-light")
+	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
+
+	// this config uses the keyring that is in celestia-app
+	// this account is already funded
+	// funds are needed to submit blocks
+	// this can be replicated by using the "single-node.sh" script
+	cfg.BlockSubmitterConfig.KeyringAccName = "user1"
+	cfg.KeyringConfig.KeyringPath = "~/.celestia-app"
+	cfg.Denom = "stake"
+
+	// start the DALC grpc server
+	srv, err := server.New(cfg, "~/.dalc", "~/.celestia-light")
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	go func() {
 		// listen to the client
 		lis, err := net.Listen("tcp", "127.0.0.1:4200")
@@ -70,14 +82,11 @@ func TestIntegration(t *testing.T) {
 }
 
 func testBlockAvailability(t *testing.T, height uint64) {
-	resp, err := dalcClient.RetrieveBlock(context.TODO(), &dalc.RetrieveBlockRequest{
-		Height: height,
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	hash := resp.Block.Header.DataHash
-	assert.Greater(t, len(hash), 0)
+	resp, err := dalcClient.CheckBlockAvailability(context.TODO(), &dalc.CheckBlockAvailabilityRequest{})
+	fmt.Println("this error", err)
+	fmt.Println(resp)
+	// hash := resp.Block.Header.DataHash
+	// assert.Greater(t, len(hash), 0)
 }
 
 func testSubmitBlock(t *testing.T) *optimint.Block {

@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 
-	appkeeper "github.com/celestiaorg/celestia-app/x/payment/keeper"
 	"github.com/celestiaorg/celestia-app/x/payment/types"
 	apptypes "github.com/celestiaorg/celestia-app/x/payment/types"
 	"github.com/celestiaorg/dalc/config"
@@ -57,7 +56,7 @@ func (bs *blockSubmitter) buildPayForMessage(block *optimint.Block) (*apptypes.M
 		types.SetFeeAmount(
 			sdk.NewCoins(
 				sdk.NewCoin(
-					appkeeper.TokenDenomination,
+					bs.config.Denom,
 					sdk.NewInt(int64(bs.config.FeeAmount)),
 				),
 			),
