@@ -132,7 +132,7 @@ func DefaultBlockSubmitterConfig() BlockSubmitterConfig {
 		Denom:          "tia",
 		GRPCAddress:    "127.0.0.1:9090",
 		RestRPCAddress: "127.0.0.1:26657",
-		KeyringAccName: "dalc-user",
+		KeyringAccName: "dalc",
 		BroadcastMode:  1,
 		Timeout:        time.Minute * 3,
 		ChainID:        "test",
