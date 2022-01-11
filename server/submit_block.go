@@ -5,12 +5,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/celestiaorg/celestia-app/app"
 	appkeeper "github.com/celestiaorg/celestia-app/x/payment/keeper"
 	"github.com/celestiaorg/celestia-app/x/payment/types"
 	apptypes "github.com/celestiaorg/celestia-app/x/payment/types"
 	"github.com/celestiaorg/dalc/config"
-	"github.com/celestiaorg/dalc/cosmoscmd"
+	"github.com/celestiaorg/dalc/config/encoding"
 	"github.com/celestiaorg/dalc/proto/optimint"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -32,7 +31,7 @@ func newBlockSubmitter(cfg config.ServerConfig) (blockSubmitter, error) {
 		return blockSubmitter{}, err
 	}
 
-	encCfg := cosmoscmd.MakeEncodingConfig(app.ModuleBasics)
+	encCfg := encoding.MakeEncodingConfig()
 
 	signer := apptypes.NewKeyringSigner(ring, cfg.KeyringAccName, cfg.ChainID)
 
@@ -49,7 +48,7 @@ type blockSubmitter struct {
 	config config.BlockSubmitterConfig
 	signer *apptypes.KeyringSigner
 
-	encCfg cosmoscmd.EncodingConfig
+	encCfg encoding.EncodingConfig
 
 	celestiaRPC *grpc.ClientConn
 }
