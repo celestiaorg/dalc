@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/celestiaorg/celestia-node/core"
 	nodecore "github.com/celestiaorg/celestia-node/core"
@@ -13,6 +14,7 @@ import (
 	"github.com/celestiaorg/dalc/config"
 	"github.com/celestiaorg/dalc/proto/dalc"
 	"github.com/celestiaorg/dalc/proto/optimint"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/gogo/protobuf/proto"
 	tmlog "github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/pkg/da"
@@ -24,22 +26,36 @@ import (
 func New(cfg config.ServerConfig, nodePath string) (*grpc.Server, error) {
 	logger := tmlog.NewTMLogger(os.Stdout)
 
-	bs, err := newBlockSubmitter(cfg)
+	// connect to a celestia full node to submit txs/query todo: change when
+	// celestia-node does this for us
+	client, err := grpc.Dial(cfg.GRPCAddress, grpc.WithInsecure(), grpc.WithTimeout(time.Minute*2))
 	if err != nil {
 		return nil, err
 	}
 
+	// open a keyring using the configured settings
+	ring, err := keyring.New("dalc", cfg.KeyringBackend, cfg.KeyringPath, strings.NewReader("."))
+	if err != nil {
+		return nil, err
+	}
+
+	bs, err := newBlockSubmitter(cfg.BlockSubmitterConfig, client, ring)
+	if err != nil {
+		return nil, err
+	}
+
+	// start a celestia light client
 	repo, err := cnode.Open(nodePath, cnode.Light)
 	if err != nil {
 		return nil, err
 	}
-
 	node, err := cnode.New(cnode.Light, repo)
 	if err != nil {
 		return nil, err
 	}
 
-	coreClient, err := nodecore.NewRemote("tcp", strings.Replace(cfg.RPCAddress, "9090", "26657", -1))
+	// connect directly to a celestia-full node
+	coreClient, err := nodecore.NewRemote("tcp", cfg.RestRPCAddress)
 	if err != nil {
 		return nil, err
 	}

@@ -2,8 +2,6 @@ package server
 
 import (
 	"context"
-	"strings"
-	"time"
 
 	appkeeper "github.com/celestiaorg/celestia-app/x/payment/keeper"
 	"github.com/celestiaorg/celestia-app/x/payment/types"
@@ -20,25 +18,14 @@ import (
 	"google.golang.org/grpc"
 )
 
-func newBlockSubmitter(cfg config.ServerConfig) (blockSubmitter, error) {
-	client, err := grpc.Dial(cfg.RPCAddress, grpc.WithInsecure(), grpc.WithTimeout(time.Minute*2))
-	if err != nil {
-		return blockSubmitter{}, err
-	}
-
-	ring, err := keyring.New("dalc", cfg.KeyringBackend, cfg.KeyringPath, strings.NewReader("."))
-	if err != nil {
-		return blockSubmitter{}, err
-	}
-
+func newBlockSubmitter(cfg config.BlockSubmitterConfig, conn *grpc.ClientConn, ring keyring.Keyring) (blockSubmitter, error) {
 	encCfg := encoding.MakeEncodingConfig()
-
 	signer := apptypes.NewKeyringSigner(ring, cfg.KeyringAccName, cfg.ChainID)
 
 	return blockSubmitter{
-		config:      cfg.BlockSubmitterConfig,
+		config:      cfg,
 		signer:      signer,
-		celestiaRPC: client,
+		celestiaRPC: conn,
 		encCfg:      encCfg,
 	}, nil
 }

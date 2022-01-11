@@ -96,8 +96,11 @@ type BlockSubmitterConfig struct {
 	// for a data availability layer. Defaults to "tia"
 	Denom string `toml:"denomination"`
 	// RPCAddress is the rpc address to submit celestia transactions to and
-	// become a light client of
-	RPCAddress string `toml:"celestia-rpc-addr"`
+	// become a light client of. Defaults to "127.0.0.1:9090"
+	GRPCAddress string `toml:"celestia-grpc-addr"`
+	// RestRPCAddress is the ip and port of the celestia rest API that is used
+	// to create a remote node. Will be removed with future updates to celestia-node
+	RestRPCAddress string `toml:"celestia-rest-addr"`
 	// ChainID is the chainID of the celstia chain being used as a data availability layer
 	ChainID string `toml:"chain-id"`
 	// Timeout is the amount of time in seconds waited for a tx to be included in a block. Defaults to 180 seconds
@@ -121,7 +124,8 @@ func DefaultBlockSubmitterConfig() BlockSubmitterConfig {
 		GasLimit:       2000000,
 		FeeAmount:      1,
 		Denom:          "tia",
-		RPCAddress:     "127.0.0.1:9090",
+		GRPCAddress:    "127.0.0.1:9090",
+		RestRPCAddress: "127.0.0.1:26657",
 		KeyringAccName: "user1",
 		BroadcastMode:  1,
 		Timeout:        time.Minute * 3,
@@ -143,7 +147,7 @@ type KeyringConfig struct {
 func DefaultKeyringConfig() KeyringConfig {
 	return KeyringConfig{
 		KeyringBackend: "test",
-		KeyringPath:    "~/.celestia-app",
+		KeyringPath:    "~/.dalc",
 	}
 }
 
