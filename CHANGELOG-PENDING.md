@@ -10,7 +10,8 @@ Month, DD, YYYY
 
 ### FEATURES
 
-- [go package] (Link to PR) Description @username
+- [server] [CheckBlockAvailability method #17 @evan-forbes](https://github.com/celestiaorg/dalc/pull/17)
+- [server] [RetrieveBlock method #17 @evan-forbes](https://github.com/celestiaorg/dalc/pull/17)
 
 ### IMPROVEMENTS
 
