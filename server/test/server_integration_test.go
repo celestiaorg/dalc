@@ -1,5 +1,3 @@
-//go:build integration
-
 package test
 
 import (
@@ -25,8 +23,10 @@ var (
 	dalcClient dalc.DALCServiceClient
 )
 
-// TestIntegration is only meant to run when connected to celestia network
+// TestIntegration is only meant to run when connected to a celestia full node
+// and a celestia-node
 func TestIntegration(t *testing.T) {
+	t.Skip("test requires connection to a full node and celestia-node")
 	// start a new dalc server
 	cfg := config.DefaultServerConfig()
 	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
