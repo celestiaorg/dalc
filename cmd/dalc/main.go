@@ -16,8 +16,6 @@ import (
 func main() {
 	root := rootCmd()
 
-	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
-
 	root.AddCommand(
 		keys.Commands(config.ConfigPath(config.HomeDir)),
 		initCmd(),
@@ -83,6 +81,8 @@ func startCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
 
 			// create the grpc server
 			srv, err := server.New(cfg, home+"/.celestia-light")
