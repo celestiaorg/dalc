@@ -1,11 +1,11 @@
-package cosmoscmd
+package encoding
 
 import (
+	"github.com/celestiaorg/celestia-app/app"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/std"
-	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 )
 
@@ -34,11 +34,11 @@ func makeEncodingConfig() EncodingConfig {
 }
 
 // MakeEncodingConfig creates an EncodingConfig for testing
-func MakeEncodingConfig(moduleBasics module.BasicManager) EncodingConfig {
+func MakeEncodingConfig() EncodingConfig {
 	encodingConfig := makeEncodingConfig()
 	std.RegisterLegacyAminoCodec(encodingConfig.Amino)
 	std.RegisterInterfaces(encodingConfig.InterfaceRegistry)
-	moduleBasics.RegisterLegacyAminoCodec(encodingConfig.Amino)
-	moduleBasics.RegisterInterfaces(encodingConfig.InterfaceRegistry)
+	app.ModuleBasics.RegisterLegacyAminoCodec(encodingConfig.Amino)
+	app.ModuleBasics.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 	return encodingConfig
 }
