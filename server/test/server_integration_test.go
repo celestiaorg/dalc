@@ -80,6 +80,7 @@ func TestIntegration(t *testing.T) {
 	srv.Stop()
 }
 
+//nolint:unused
 func testBlockAvailability(t *testing.T, header *optimint.Header) {
 	resp, err := dalcClient.CheckBlockAvailability(
 		context.TODO(),
@@ -92,6 +93,7 @@ func testBlockAvailability(t *testing.T, header *optimint.Header) {
 	assert.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
 }
 
+//nolint:unused
 func testSubmitBlock(t *testing.T) *optimint.Block {
 	id := []byte{1, 2, 3, 4, 5, 6, 7, 8}
 	hate := uint64(8)
@@ -116,6 +118,7 @@ func testSubmitBlock(t *testing.T) *optimint.Block {
 	return block
 }
 
+//nolint:unused
 func testRetrieveBlock(t *testing.T, block *optimint.Block) {
 	req := &dalc.RetrieveBlockRequest{
 		Height: block.Header.Height,
