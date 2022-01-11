@@ -4,7 +4,7 @@ set -o errexit -o nounset
 CHAINID="test"
 
 # Build genesis file incl account for passed address
-coins="1000000000000stake,10000000000000tia"
+coins="10000000000000000stake"
 celestia-appd init $CHAINID --chain-id $CHAINID
 
 # create genesis account keys

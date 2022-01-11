@@ -6,15 +6,17 @@ import (
 	"time"
 
 	"github.com/celestiaorg/celestia-app/app"
+	appkeeper "github.com/celestiaorg/celestia-app/x/payment/keeper"
+	"github.com/celestiaorg/celestia-app/x/payment/types"
 	apptypes "github.com/celestiaorg/celestia-app/x/payment/types"
 	"github.com/celestiaorg/dalc/config"
+	"github.com/celestiaorg/dalc/cosmoscmd"
 	"github.com/celestiaorg/dalc/proto/optimint"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/gogo/protobuf/proto"
-	"github.com/tendermint/spm/cosmoscmd"
 	"github.com/tendermint/tendermint/pkg/consts"
 	"google.golang.org/grpc"
 )
@@ -25,7 +27,7 @@ func newBlockSubmitter(cfg config.ServerConfig) (blockSubmitter, error) {
 		return blockSubmitter{}, err
 	}
 
-	ring, err := keyring.New("", cfg.KeyringBackend, cfg.KeyringPath, strings.NewReader(""))
+	ring, err := keyring.New("dalc", cfg.KeyringBackend, cfg.KeyringPath, strings.NewReader("."))
 	if err != nil {
 		return blockSubmitter{}, err
 	}
@@ -64,7 +66,18 @@ func (bs *blockSubmitter) buildPayForMessage(block *optimint.Block) (*apptypes.M
 		return nil, err
 	}
 
-	err = pfmMsg.SignShareCommitments(bs.signer, bs.newTxBuilder())
+	err = pfmMsg.SignShareCommitments(
+		bs.signer,
+		types.SetFeeAmount(
+			sdk.NewCoins(
+				sdk.NewCoin(
+					appkeeper.TokenDenomination,
+					sdk.NewInt(int64(bs.config.FeeAmount)),
+				),
+			),
+		),
+		types.SetGasLimit(bs.config.GasLimit),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +112,7 @@ func (bs *blockSubmitter) SubmitBlock(ctx context.Context, block *optimint.Block
 	return txClient.BroadcastTx(
 		ctx,
 		&tx.BroadcastTxRequest{
-			Mode:    tx.BroadcastMode(2),
+			Mode:    tx.BroadcastMode(1),
 			TxBytes: rawTx,
 		},
 	)
@@ -108,14 +121,14 @@ func (bs *blockSubmitter) SubmitBlock(ctx context.Context, block *optimint.Block
 func (bs *blockSubmitter) squareSizes() []uint64 {
 	// todo: don't hardcode the square sizes
 	return []uint64{
-		// only use a single square size until the app is fixed in #144
-		// consts.MaxSquareSize / 8,
-		// consts.MaxSquareSize / 4,
-		// consts.MaxSquareSize / 2,
+		consts.MaxSquareSize / 8,
+		consts.MaxSquareSize / 4,
+		consts.MaxSquareSize / 2,
 		consts.MaxSquareSize,
 	}
 }
 
+// todo: refactor this out
 func (bs *blockSubmitter) newTxBuilder() client.TxBuilder {
 	// todo: don't hardcode the gas limit and fees
 	builder := bs.signer.NewTxBuilder()
