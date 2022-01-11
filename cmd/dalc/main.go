@@ -7,10 +7,10 @@ import (
 
 	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/dalc/config"
+	"github.com/celestiaorg/dalc/cosmoscmd"
 	"github.com/celestiaorg/dalc/server"
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/spf13/cobra"
-	"github.com/tendermint/spm/cosmoscmd"
 )
 
 func main() {
