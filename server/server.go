@@ -69,7 +69,7 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 
 	lc := &DataAvailabilityLightClient{
 		logger:       logger,
-		HeightMapper: hm,
+		heightMapper: hm,
 
 		blockSubmitter: bs,
 		node:           node,
