@@ -118,7 +118,7 @@ func testSubmitBlock(t *testing.T) *optimint.Block {
 	return block
 }
 
-//nolint:unused
+//nolint
 func testRetrieveBlock(t *testing.T, block *optimint.Block) {
 	req := &dalc.RetrieveBlockRequest{
 		Height: block.Header.Height,

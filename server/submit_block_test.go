@@ -38,9 +38,9 @@ func TestBuildPFM(t *testing.T) {
 	assert.Contains(t, string(pfm.Message), string(rawBlock))
 }
 
-func testBlockSubmitter(t *testing.T, cfg config.BlockSubmitterConfig) (blockSubmitter, keyring.Keyring) {
+func testBlockSubmitter(t *testing.T, cfg config.BlockSubmitterConfig) (blockSubmitter, keyring.Keyring) { //nolint
 	t.Helper()
-	kr := generateKeyring(t, testAccName, cfg.KeyringAccName)
+	kr := generateKeyring(t, cfg.KeyringAccName)
 
 	testBS, err := newBlockSubmitter(cfg, nil, kr)
 	require.NoError(t, err)
@@ -52,14 +52,8 @@ func generateKeyring(t *testing.T, accts ...string) keyring.Keyring {
 	kb := keyring.NewInMemory()
 
 	for _, acc := range accts {
-		kb.NewMnemonic(acc, keyring.English, "", "", hd.Secp256k1)
+		kb.NewMnemonic(acc, keyring.English, "", "", hd.Secp256k1) //nolint
 	}
 
 	return kb
 }
-
-const (
-	// nolint:lll
-	testMnemo   = `ramp soldier connect gadget domain mutual staff unusual first midnight iron good deputy wage vehicle mutual spike unlock rocket delay hundred script tumble choose`
-	testAccName = "user1"
-)
