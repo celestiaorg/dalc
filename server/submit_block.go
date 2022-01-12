@@ -3,22 +3,23 @@ package server
 import (
 	"context"
 
+	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/celestia-app/x/payment/types"
 	apptypes "github.com/celestiaorg/celestia-app/x/payment/types"
 	"github.com/celestiaorg/dalc/config"
-	"github.com/celestiaorg/dalc/config/encoding"
 	"github.com/celestiaorg/dalc/proto/optimint"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/gogo/protobuf/proto"
+	"github.com/tendermint/spm/cosmoscmd"
 	"github.com/tendermint/tendermint/pkg/consts"
 	"google.golang.org/grpc"
 )
 
 func newBlockSubmitter(cfg config.BlockSubmitterConfig, conn *grpc.ClientConn, ring keyring.Keyring) (blockSubmitter, error) {
-	encCfg := encoding.MakeEncodingConfig()
+	encCfg := cosmoscmd.MakeEncodingConfig(app.ModuleBasics)
 	signer := apptypes.NewKeyringSigner(ring, cfg.KeyringAccName, cfg.ChainID)
 
 	return blockSubmitter{
@@ -34,7 +35,7 @@ type blockSubmitter struct {
 	config config.BlockSubmitterConfig
 	signer *apptypes.KeyringSigner
 
-	encCfg encoding.EncodingConfig
+	encCfg cosmoscmd.EncodingConfig
 
 	celestiaRPC *grpc.ClientConn
 }
