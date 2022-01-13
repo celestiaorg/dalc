@@ -113,7 +113,7 @@ type BlockSubmitterConfig struct {
 	Timeout time.Duration `toml:"timeout"` // todo: actually implement a timeout
 	// BroadcastMode determines what the light client does after submitting a
 	// WirePayForMessage. 0 Unspecified, 1 Block until included in a block, 2
-	// Syncronous, 3 Asyncronous. Defualts to 1 Note: due to the difference
+	// Synchronous, 3 Asynchronous. Defaults to 1 Note: due to the difference
 	// between WirePayForMessage and PayForMessage, celestia-core currently can
 	// not properly notify the dalc that the WirePayForMessage was included in
 	// the block, so we are defaulting to 2 at the moment.
