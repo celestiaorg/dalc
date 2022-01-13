@@ -8,6 +8,8 @@ import (
 	"sync"
 )
 
+const HeightMapFileName = "height_map.json"
+
 // HeightMapper keeps track of which optimint blocks where posted to which celestia
 // blocks
 type HeightMapper struct {
