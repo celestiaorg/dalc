@@ -115,6 +115,6 @@ func startCmd() *cobra.Command {
 			return srv.Serve(lis)
 		},
 	}
-	command.Flags().String(homeFlag, config.HomeDir, "specific the home path")
+	command.Flags().String(homeFlag, config.HomeDir, "specify the home path")
 	return command
 }
