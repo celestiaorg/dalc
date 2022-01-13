@@ -1,17 +1,18 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/BurntSushi/toml"
 )
 
 const (
-	DefaultDirName = ".dalc"
-	ConfigFileName = "dalc.toml"
+	DefaultDirName  = ".dalc"
+	ConfigFileName  = "dalc.toml"
+	CelestiNodeHome = ".celestia-light"
 )
 
 var (
@@ -27,11 +28,11 @@ func init() {
 }
 
 func ConfigPath(home string) string {
-	return fmt.Sprintf("%s/%s/%s", home, DefaultDirName, ConfigFileName)
+	return filepath.Join(home, DefaultDirName, ConfigFileName)
 }
 
 func DirectoryPath(home string) string {
-	return fmt.Sprintf("%s/%s", home, DefaultDirName)
+	return filepath.Join(home, DefaultDirName)
 }
 
 type ServerConfig struct {
@@ -153,7 +154,7 @@ type KeyringConfig struct {
 func DefaultKeyringConfig() KeyringConfig {
 	return KeyringConfig{
 		KeyringBackend: "test",
-		KeyringPath:    "~/.dalc",
+		KeyringPath:    filepath.Join(HomeDir, DefaultDirName),
 	}
 }
 

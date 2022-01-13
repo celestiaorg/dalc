@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"path/filepath"
 
 	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/dalc/config"
@@ -100,7 +101,7 @@ func startCmd() *cobra.Command {
 			}
 
 			// create the grpc server
-			srv, err := server.New(cfg, home, home+"/.celestia-light")
+			srv, err := server.New(cfg, home, filepath.Join(home, config.CelestiNodeHome))
 			if err != nil {
 				return err
 			}
