@@ -1,0 +1,19 @@
+[base]
+  laddr = "0.0.0.0:4200"
+
+[block-submitter]
+  gas-limit = 2000000
+  fee-amount = 1
+  denomination = "tia"
+  celestia-grpc-addr = "127.0.0.1:9090"
+  celestia-rest-addr = "127.0.0.1:26657"
+  chain-id = "test"
+  timeout = 180000000000
+  broadcast-mode = 1
+  keyring-account-name = "user1"
+
+[light-client]
+
+[keyring]
+  backend = "test"
+  path = "~/.dalc"

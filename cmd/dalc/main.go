@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"os"
@@ -91,6 +92,7 @@ func startCmd() *cobra.Command {
 			}
 
 			// boot the server
+			fmt.Printf("ListenAddr: %v\n", cfg.ListenAddr)
 			lis, err := net.Listen("tcp", cfg.ListenAddr)
 			if err != nil {
 				log.Panic(err)

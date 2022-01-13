@@ -13,8 +13,15 @@ test:
 install:
 	cd ./cmd/dalc && go install
 
+# build:
+# 	cd ./cmd/dalc && go build -o $(CURDIR)/build/dalc
+
+## build: Build celestia-node binary.
 build:
-	cd ./cmd/dalc && go build -o $(CURDIR)/build/dalc
+	@echo "--> Building DALC"
+	@go build ./cmd/dalc
+.PHONY: build
+
 
 proto-all: proto-gen proto-lint
 .PHONY: proto-all

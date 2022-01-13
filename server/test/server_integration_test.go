@@ -34,7 +34,7 @@ func TestIntegration(t *testing.T) {
 
 	go func() {
 		// listen to the client
-		lis, err := net.Listen("tcp", "127.0.0.1:4200")
+		lis, err := net.Listen("tcp", "0.0.0.1:4200")
 		if err != nil {
 			log.Panic(err)
 		}
