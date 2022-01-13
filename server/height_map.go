@@ -2,9 +2,9 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"sync"
 )
 
@@ -20,7 +20,7 @@ type HeightMapper struct {
 // Search returns the celestia height of which the optimint blocks were stored,
 // if it exists
 func (hm *HeightMapper) Search(optimintHeight int64) (celestiaHeight int64, has bool) {
-	strOptiHeight := fmt.Sprintf("%d", optimintHeight)
+	strOptiHeight := strconv.FormatInt(optimintHeight, 10)
 	hm.mut.RLock()
 	defer hm.mut.RUnlock()
 	celestiaHeight, has = hm.Heights[strOptiHeight]
@@ -33,7 +33,7 @@ func (hm *HeightMapper) Save(optimintHeight, celestiaHeight int64) error {
 	hm.mut.Lock()
 	defer hm.mut.Unlock()
 
-	strOptiHeight := fmt.Sprintf("%d", optimintHeight)
+	strOptiHeight := strconv.FormatInt(optimintHeight, 10)
 
 	if cHeight, has := hm.Heights[strOptiHeight]; has {
 		return PreExistingBlockMappingError{
