@@ -7,11 +7,11 @@ require (
 	github.com/celestiaorg/celestia-app v0.0.0-00010101000000-000000000000
 	github.com/celestiaorg/celestia-node v0.0.0-20211110181526-447aac929993
 	github.com/celestiaorg/nmt v0.8.0
-	github.com/cosmos/cosmos-sdk v0.44.0
+	github.com/cosmos/cosmos-sdk v0.44.3
 	github.com/gogo/protobuf v1.3.3
 	github.com/spf13/cobra v1.3.0
 	github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942
-	github.com/tendermint/spm v0.1.7
+	github.com/tendermint/spm v0.1.9
 	github.com/tendermint/tendermint v0.34.14
 	google.golang.org/grpc v1.42.0
 )
@@ -37,7 +37,7 @@ require (
 	github.com/confio/ics23/go v0.6.6 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/iavl v0.17.1 // indirect
-	github.com/cosmos/ibc-go v1.2.0 // indirect
+	github.com/cosmos/ibc-go v1.2.2 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.11.1 // indirect
 	github.com/cosmos/ledger-go v0.9.2 // indirect
 	github.com/cskr/pubsub v1.0.2 // indirect
