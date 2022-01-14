@@ -134,7 +134,7 @@ func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq 
 		return nil, err
 	}
 
-	d.logger.Info("Submitted block to celstia", "height", resp.Height, "gas used", resp.GasUsed, "hash", resp.TxHash)
+	d.logger.Info("Submitted block to celestia", "height", resp.Height, "gas used", resp.GasUsed, "hash", resp.TxHash)
 	return &dalc.SubmitBlockResponse{Result: &dalc.DAResponse{Code: dalc.StatusCode_STATUS_CODE_SUCCESS}}, nil
 }
 

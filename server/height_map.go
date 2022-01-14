@@ -72,7 +72,7 @@ func HeightMapperFromFile(path string) (HeightMapper, error) {
 }
 
 func (hm *HeightMapper) SaveToFile(path string) error {
-	file, err := os.Open(path)
+	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, 0777)
 	if err != nil {
 		return err
 	}

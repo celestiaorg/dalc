@@ -67,7 +67,7 @@ func initCmd() *cobra.Command {
 			}
 
 			hm := server.HeightMapper{}
-			err = hm.SaveToFile(filepath.Join(path, server.HeightMapFileName))
+			err = hm.SaveToFile(filepath.Join(path, config.DefaultDirName, server.HeightMapFileName))
 			if err != nil {
 				return err
 			}

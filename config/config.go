@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	DefaultDirName  = ".dalc"
-	ConfigFileName  = "dalc.toml"
+	DefaultDirName   = ".dalc"
+	ConfigFileName   = "dalc.toml"
 	CelestiaNodeHome = ".celestia-light"
 )
 
@@ -108,7 +108,7 @@ type BlockSubmitterConfig struct {
 	// RestRPCAddress is the ip and port of the celestia rest API that is used
 	// to create a remote node. Will be removed with future updates to celestia-node
 	RestRPCAddress string `toml:"celestia-rest-addr"`
-	// ChainID is the chainID of the celstia chain being used as a data availability layer
+	// ChainID is the chainID of the celestia chain being used as a data availability layer
 	ChainID string `toml:"chain-id"`
 	// Timeout is the amount of time in seconds waited for a tx to be included in a block. Defaults to 180 seconds
 	Timeout time.Duration `toml:"timeout"` // todo: actually implement a timeout
