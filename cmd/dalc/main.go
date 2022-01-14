@@ -101,7 +101,7 @@ func startCmd() *cobra.Command {
 			}
 
 			// create the grpc server
-			srv, err := server.New(cfg, home, filepath.Join(home, config.CelestiNodeHome))
+			srv, err := server.New(cfg, home, filepath.Join(home, config.CelestiaNodeHome))
 			if err != nil {
 				return err
 			}
