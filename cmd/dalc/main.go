@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"os"
+	"path/filepath"
 
 	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/dalc/config"
@@ -13,13 +15,15 @@ import (
 	"github.com/tendermint/spm/cosmoscmd"
 )
 
+func init() {
+	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
+}
+
 func main() {
 	root := rootCmd()
 
-	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
-
 	root.AddCommand(
-		keys.Commands(config.DefaultConfigPath),
+		keys.Commands(config.ConfigPath(config.HomeDir)),
 		initCmd(),
 		startCmd(),
 	)
@@ -41,16 +45,17 @@ func rootCmd() *cobra.Command {
 }
 
 func initCmd() *cobra.Command {
-	const pathFlag = "path"
+	const homeFlag = "home"
 	command := &cobra.Command{
 		Use: "init",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			path, err := cmd.Flags().GetString(pathFlag)
+			path, err := cmd.Flags().GetString(homeFlag)
 			if err != nil {
 				return err
 			}
 
-			err = os.MkdirAll(path, 0664)
+			// todo: update permissions to something more reasonable
+			err = os.MkdirAll(path+"/"+config.DefaultDirName, 0777)
 			if err != nil {
 				return err
 			}
@@ -61,31 +66,42 @@ func initCmd() *cobra.Command {
 				return err
 			}
 
-			return nil
-		},
-	}
-	command.Flags().String(pathFlag, config.DefaultConfigPath, "specific the home path")
-	return command
-}
-
-func startCmd() *cobra.Command {
-	const pathFlag = "path"
-	command := &cobra.Command{
-		Use: "start",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			// load the config
-			path, err := cmd.Flags().GetString(pathFlag)
+			hm := server.HeightMapper{}
+			err = hm.SaveToFile(filepath.Join(path, server.HeightMapFileName))
 			if err != nil {
 				return err
 			}
 
-			cfg, err := config.Load(path)
+			fmt.Println("Please add a key to the keyring via `dalc keys add`")
+			fmt.Println("Currently referencing this key using \"dalc\", but this can be changed in the config under the BlockSubmitter section")
+
+			return nil
+		},
+	}
+	command.Flags().String(homeFlag, config.HomeDir, "specific the home path")
+	return command
+}
+
+func startCmd() *cobra.Command {
+	const homeFlag = "home"
+	command := &cobra.Command{
+		Use: "start",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			// load the config
+			home, err := cmd.Flags().GetString(homeFlag)
+			if err != nil {
+				return err
+			}
+
+			dalcHome := config.ConfigPath(home)
+
+			cfg, err := config.Load(dalcHome)
 			if err != nil {
 				return err
 			}
 
 			// create the grpc server
-			srv, err := server.New(cfg)
+			srv, err := server.New(cfg, home, filepath.Join(home, config.CelestiaNodeHome))
 			if err != nil {
 				return err
 			}
@@ -95,11 +111,11 @@ func startCmd() *cobra.Command {
 			if err != nil {
 				log.Panic(err)
 			}
-			log.Println("Listening on:", lis.Addr())
+			log.Println("DALC listening on:", lis.Addr())
 
 			return srv.Serve(lis)
 		},
 	}
-	command.Flags().String(pathFlag, config.DefaultConfigPath, "specific the home path")
+	command.Flags().String(homeFlag, config.HomeDir, "specify the home path")
 	return command
 }

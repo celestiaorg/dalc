@@ -12,7 +12,8 @@ import (
 )
 
 func TestBuildPFM(t *testing.T) {
-	bs, kr := testBlockSubmitter(t)
+	cfg := config.DefaultBlockSubmitterConfig()
+	bs, kr := testBlockSubmitter(t, cfg)
 	block := &optimint.Block{
 		Header: &optimint.Header{
 			Height: 1,
@@ -27,7 +28,7 @@ func TestBuildPFM(t *testing.T) {
 	pfm, err := bs.buildPayForMessage(block)
 	require.NoError(t, err)
 
-	signerInfo, err := kr.Key(testAccName)
+	signerInfo, err := kr.Key(cfg.KeyringAccName)
 	require.NoError(t, err)
 
 	rawBlock, err := block.Marshal()
@@ -37,10 +38,11 @@ func TestBuildPFM(t *testing.T) {
 	assert.Contains(t, string(pfm.Message), string(rawBlock))
 }
 
-func testBlockSubmitter(t *testing.T) (blockSubmitter, keyring.Keyring) {
+func testBlockSubmitter(t *testing.T, cfg config.BlockSubmitterConfig) (blockSubmitter, keyring.Keyring) { //nolint
 	t.Helper()
-	kr := generateKeyring(t)
-	testBS, err := newBlockSubmitter(config.DefaultBlockSubmitterConfig(), kr)
+	kr := generateKeyring(t, cfg.KeyringAccName)
+
+	testBS, err := newBlockSubmitter(cfg, nil, kr)
 	require.NoError(t, err)
 	return testBS, kr
 }
@@ -50,22 +52,8 @@ func generateKeyring(t *testing.T, accts ...string) keyring.Keyring {
 	kb := keyring.NewInMemory()
 
 	for _, acc := range accts {
-		_, _, err := kb.NewMnemonic(acc, keyring.English, "", "", hd.Secp256k1)
-		if err != nil {
-			t.Error(err)
-		}
-	}
-
-	_, err := kb.NewAccount(testAccName, testMnemo, "1234", "", hd.Secp256k1)
-	if err != nil {
-		panic(err)
+		kb.NewMnemonic(acc, keyring.English, "", "", hd.Secp256k1) //nolint
 	}
 
 	return kb
 }
-
-const (
-	// nolint:lll
-	testMnemo   = `ramp soldier connect gadget domain mutual staff unusual first midnight iron good deputy wage vehicle mutual spike unlock rocket delay hundred script tumble choose`
-	testAccName = "test"
-)
