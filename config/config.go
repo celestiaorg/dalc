@@ -91,12 +91,6 @@ func DefaultBaseConfig() BaseConfig {
 	}
 }
 
-func DefaultBaseConfig() BaseConfig {
-	return BaseConfig{
-		ListenAddr: "0.0.0.0:4200",
-	}
-}
-
 // BlockSubmitterConfig holds the settings relevant for submitting a block to Celestia
 // Config holds all configuration required by Celestia DA layer client.
 type BlockSubmitterConfig struct {

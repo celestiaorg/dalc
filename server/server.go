@@ -60,14 +60,6 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 		return nil, err
 	}
 
-	// connect directly to a celestia-full node
-	coreClient, err := nodecore.NewRemote("tcp", cfg.RestRPCAddress)
-	if err != nil {
-		return nil, err
-	}
-
-	node.CoreClient = coreClient
-
 	namespace, err := hex.DecodeString(cfg.Namespace)
 	if err != nil {
 		return nil, err
