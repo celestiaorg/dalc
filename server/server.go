@@ -26,6 +26,8 @@ import (
 func New(cfg config.ServerConfig, nodePath string) (*grpc.Server, error) {
 	logger := tmlog.NewTMLogger(os.Stdout)
 
+	fmt.Printf("%+v\n", cfg)
+
 	// connect to a celestia full node to submit txs/query todo: change when
 	// celestia-node does this for us
 	client, err := grpc.Dial(cfg.GRPCAddress, grpc.WithInsecure(), grpc.WithTimeout(time.Minute*2))
@@ -84,9 +86,12 @@ type DataAvailabilityLightClient struct {
 
 // SubmitBlock posts an optimint block to celestia
 func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq *dalc.SubmitBlockRequest) (*dalc.SubmitBlockResponse, error) {
+	fmt.Println("Got SubmitBlock Req")
+
 	// submit the block
 	broadcastResp, err := d.blockSubmitter.SubmitBlock(ctx, blockReq.Block)
 	if err != nil {
+		fmt.Printf("SubmitBlock Error: %v\n", err.Error())
 		return &dalc.SubmitBlockResponse{
 			Result: &dalc.DAResponse{Code: dalc.StatusCode_STATUS_CODE_ERROR, Message: err.Error()},
 		}, err

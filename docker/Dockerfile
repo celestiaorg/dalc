@@ -11,12 +11,14 @@ RUN make build
 # stage 2
 FROM ubuntu
 
-COPY celestia-light /root/.celestia-light
-COPY docker/entrypoint.sh /
+COPY docker/entrypoint.sh /root/entrypoint.sh
 
-COPY --from=builder /dalc/dalc /
+# Copy in the binary
+COPY --from=builder /dalc/dalc /root/dalc
 
-EXPOSE 26656 26657 1317 9090
+WORKDIR /root
 
-ENTRYPOINT ["/entrypoint.sh"]
+EXPOSE 4200
+
+ENTRYPOINT ["/root/entrypoint.sh"]
 CMD ["dalc"]

@@ -13,10 +13,7 @@ test:
 install:
 	cd ./cmd/dalc && go install
 
-# build:
-# 	cd ./cmd/dalc && go build -o $(CURDIR)/build/dalc
-
-## build: Build celestia-node binary.
+## build: Build DALC binary.
 build:
 	@echo "--> Building DALC"
 	@go build ./cmd/dalc

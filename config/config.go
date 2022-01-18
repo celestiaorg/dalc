@@ -27,7 +27,8 @@ func init() {
 }
 
 func ConfigPath(home string) string {
-	return fmt.Sprintf("%s/%s/%s", home, DefaultDirName, ConfigFileName)
+	// return fmt.Sprintf("%s/%s/%s", home, DefaultDirName, ConfigFileName)
+	return fmt.Sprintf("%s/%s", home, ConfigFileName)
 }
 
 type ServerConfig struct {
