@@ -1,5 +1,3 @@
-// //go:build integrations
-
 package test
 
 import (
@@ -10,12 +8,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/dalc/config"
 	"github.com/celestiaorg/dalc/proto/dalc"
 	"github.com/celestiaorg/dalc/proto/optimint"
 	"github.com/celestiaorg/dalc/server"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/tendermint/spm/cosmoscmd"
 	"google.golang.org/grpc"
 )
 
@@ -23,18 +23,30 @@ var (
 	dalcClient dalc.DALCServiceClient
 )
 
-// TestIntegration is only meant to run when connected to celestia network
+// TestIntegration is only meant to run when connected to a celestia full node
+// and a celestia-node
 func TestIntegration(t *testing.T) {
+	t.Skip("test requires connection to a full node and celestia-node")
 	// start a new dalc server
 	cfg := config.DefaultServerConfig()
-	srv, err := server.New(cfg, "~/.celestia-light")
+	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
+
+	// this config uses the keyring that is in celestia-app
+	// this account is already funded
+	// funds are needed to submit blocks
+	// this can be replicated by using the "single-node.sh" script
+	cfg.BlockSubmitterConfig.KeyringAccName = "user1"
+	cfg.KeyringConfig.KeyringPath = "~/.celestia-app"
+	cfg.Denom = "stake"
+
+	// start the DALC grpc server
+	srv, err := server.New(cfg, "~/.dalc", "~/.celestia-light")
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	go func() {
 		// listen to the client
-		lis, err := net.Listen("tcp", "0.0.0.1:4200")
+		lis, err := net.Listen("tcp", "127.0.0.1:4200")
 		if err != nil {
 			log.Panic(err)
 		}
@@ -54,32 +66,34 @@ func TestIntegration(t *testing.T) {
 	// set the global client
 	dalcClient = dalc.NewDALCServiceClient(conn)
 
-	_ = testSubmitBlock(t)
-	testBlockAvailability(t, 1)
+	optimintBlock := testSubmitBlock(t)
 
-	// req := dalc.RetrieveBlockRequest{
-	// 	Height: 8,
-	// }
-	// resp, err := dalcClient.RetrieveBlock(context.TODO(), &req)
-	// require.NoError(t, err)
+	testBlockAvailability(t, optimintBlock.Header)
 
-	// assert.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
-
-	// assert.Equal(t, block, resp.Block)
+	req := dalc.RetrieveBlockRequest{
+		Height: optimintBlock.Header.Height,
+	}
+	resp, err := dalcClient.RetrieveBlock(context.TODO(), &req)
+	require.NoError(t, err)
+	assert.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
+	assert.Equal(t, optimintBlock, resp.Block)
 	srv.Stop()
 }
 
-func testBlockAvailability(t *testing.T, height uint64) {
-	resp, err := dalcClient.RetrieveBlock(context.TODO(), &dalc.RetrieveBlockRequest{
-		Height: height,
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	hash := resp.Block.Header.DataHash
-	assert.Greater(t, len(hash), 0)
+//nolint:unused
+func testBlockAvailability(t *testing.T, header *optimint.Header) {
+	resp, err := dalcClient.CheckBlockAvailability(
+		context.TODO(),
+		&dalc.CheckBlockAvailabilityRequest{
+			Header: header,
+		},
+	)
+	require.NoError(t, err)
+	assert.True(t, resp.DataAvailable)
+	assert.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
 }
 
+//nolint:unused
 func testSubmitBlock(t *testing.T) *optimint.Block {
 	id := []byte{1, 2, 3, 4, 5, 6, 7, 8}
 	hate := uint64(8)
@@ -104,6 +118,14 @@ func testSubmitBlock(t *testing.T) *optimint.Block {
 	return block
 }
 
+//nolint
 func testRetrieveBlock(t *testing.T, block *optimint.Block) {
+	req := &dalc.RetrieveBlockRequest{
+		Height: block.Header.Height,
+	}
+
+	resp, err := dalcClient.RetrieveBlock(context.TODO(), req)
+	require.NoError(t, err)
+	require.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
 
 }
