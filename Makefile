@@ -19,6 +19,9 @@ build:
 	@go build ./cmd/dalc
 .PHONY: build
 
+# Build DALC docker image
+build-docker:
+	@docker build --platform linux/amd64 -f docker/Dockerfile -t ghcr.io/celestiaorg/dalc:latest .
 
 proto-all: proto-gen proto-lint
 .PHONY: proto-all

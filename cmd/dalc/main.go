@@ -94,13 +94,10 @@ func startCmd() *cobra.Command {
 			}
 
 			dalcHome := config.ConfigPath(home)
-
 			cfg, err := config.Load(dalcHome)
 			if err != nil {
 				return err
 			}
-
-			// cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
 
 			// create the grpc server
 			srv, err := server.New(cfg, home, filepath.Join(home, config.CelestiaNodeHome))
