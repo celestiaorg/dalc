@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	DefaultDirName   = ".dalc"
-	ConfigFileName   = "dalc.toml"
+	DefaultDirName  = ".dalc"
+	ConfigFileName  = "dalc.toml"
 	CelestiaNodeHome = ".celestia-light"
 )
 

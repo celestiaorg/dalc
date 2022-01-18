@@ -100,7 +100,7 @@ func startCmd() *cobra.Command {
 				return err
 			}
 
-			cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
+			// cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
 
 			// create the grpc server
 			srv, err := server.New(cfg, home, filepath.Join(home, config.CelestiaNodeHome))
@@ -109,7 +109,6 @@ func startCmd() *cobra.Command {
 			}
 
 			// boot the server
-			fmt.Printf("ListenAddr: %v\n", cfg.ListenAddr)
 			lis, err := net.Listen("tcp", cfg.ListenAddr)
 			if err != nil {
 				log.Panic(err)

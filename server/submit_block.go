@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/celestia-app/x/payment/types"
@@ -74,18 +73,15 @@ func (bs *blockSubmitter) buildPayForMessage(block *optimint.Block) (*apptypes.M
 
 // SubmitBlock prepares a WirePayForMessage that contains the provided block data
 func (bs *blockSubmitter) SubmitBlock(ctx context.Context, block *optimint.Block) (*tx.BroadcastTxResponse, error) {
-	fmt.Println("Got to QueryAccountNumber")
 	err := bs.signer.QueryAccountNumber(ctx, bs.celestiaRPC)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println("Got to buildPayForMessage")
 	pfmMsg, err := bs.buildPayForMessage(block)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("Got to BuildSignedTx")
 	wirePFMtx, err := bs.signer.BuildSignedTx(bs.newTxBuilder(), pfmMsg)
 	if err != nil {
 		return nil, err

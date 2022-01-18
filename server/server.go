@@ -60,11 +60,6 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 		return nil, err
 	}
 
-	namespace, err := hex.DecodeString(cfg.Namespace)
-	if err != nil {
-		return nil, err
-	}
-
 	// connect directly to a celestia-full node
 	coreClient, err := nodecore.NewRemote("tcp", cfg.RestRPCAddress)
 	if err != nil {
@@ -72,6 +67,11 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 	}
 
 	node.CoreClient = coreClient
+
+	namespace, err := hex.DecodeString(cfg.Namespace)
+	if err != nil {
+		return nil, err
+	}
 
 	lc := &DataAvailabilityLightClient{
 		logger:         logger,
@@ -110,7 +110,6 @@ func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq 
 	// submit the block
 	broadcastResp, err := d.blockSubmitter.SubmitBlock(ctx, blockReq.Block)
 	if err != nil {
-		fmt.Printf("SubmitBlock Error: %v\n", err.Error())
 		return &dalc.SubmitBlockResponse{
 			Result: &dalc.DAResponse{Code: dalc.StatusCode_STATUS_CODE_ERROR, Message: err.Error()},
 		}, err
