@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/celestiaorg/celestia-node/core"
@@ -27,7 +28,7 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 	logger := tmlog.NewTMLogger(os.Stdout)
 
 	// load the height map
-	hm, err := HeightMapperFromFile("/home/evan/.dalc" + "/height_map.json")
+	hm, err := HeightMapperFromFile(filepath.Join(configPath, config.DefaultDirName, HeightMapFileName))
 	if err != nil {
 		return nil, err
 	}

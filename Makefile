@@ -13,8 +13,15 @@ test:
 install:
 	cd ./cmd/dalc && go install
 
+## build: Build DALC binary.
 build:
-	cd ./cmd/dalc && go build -o $(CURDIR)/build/dalc
+	@echo "--> Building DALC"
+	@go build ./cmd/dalc
+.PHONY: build
+
+# Build DALC docker image
+build-docker:
+	@docker build --platform linux/amd64 -f docker/Dockerfile -t ghcr.io/celestiaorg/dalc:latest .
 
 proto-all: proto-gen proto-lint
 .PHONY: proto-all
