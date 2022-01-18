@@ -94,6 +94,7 @@ func startCmd() *cobra.Command {
 			}
 
 			dalcHome := config.ConfigPath(home)
+
 			cfg, err := config.Load(dalcHome)
 			if err != nil {
 				return err
