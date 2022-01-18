@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"path/filepath"
 
 	"github.com/celestiaorg/celestia-app/app"
 	"github.com/celestiaorg/dalc/config"
@@ -13,6 +14,10 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tendermint/spm/cosmoscmd"
 )
+
+func init() {
+	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
+}
 
 func main() {
 	root := rootCmd()
@@ -49,6 +54,7 @@ func initCmd() *cobra.Command {
 				return err
 			}
 
+			// todo: update permissions to something more reasonable
 			err = os.MkdirAll(path+"/"+config.DefaultDirName, 0777)
 			if err != nil {
 				return err
@@ -59,6 +65,15 @@ func initCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			hm := server.HeightMapper{}
+			err = hm.SaveToFile(filepath.Join(path, server.HeightMapFileName))
+			if err != nil {
+				return err
+			}
+
+			fmt.Println("Please add a key to the keyring via `dalc keys add`")
+			fmt.Println("Currently referencing this key using \"dalc\", but this can be changed in the config under the BlockSubmitter section")
 
 			return nil
 		},
@@ -78,7 +93,9 @@ func startCmd() *cobra.Command {
 				return err
 			}
 
-			cfg, err := config.Load(config.ConfigPath(home))
+			dalcHome := config.ConfigPath(home)
+
+			cfg, err := config.Load(dalcHome)
 			if err != nil {
 				return err
 			}
@@ -86,7 +103,7 @@ func startCmd() *cobra.Command {
 			cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
 
 			// create the grpc server
-			srv, err := server.New(cfg, home+"/celestia-light")
+			srv, err := server.New(cfg, home, filepath.Join(home, config.CelestiaNodeHome))
 			if err != nil {
 				return err
 			}
@@ -102,6 +119,6 @@ func startCmd() *cobra.Command {
 			return srv.Serve(lis)
 		},
 	}
-	command.Flags().String(homeFlag, config.HomeDir, "specific the home path")
+	command.Flags().String(homeFlag, config.HomeDir, "specify the home path")
 	return command
 }

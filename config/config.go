@@ -1,17 +1,18 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/BurntSushi/toml"
 )
 
 const (
-	DefaultDirName = ".dalc"
-	ConfigFileName = "dalc.toml"
+	DefaultDirName   = ".dalc"
+	ConfigFileName   = "dalc.toml"
+	CelestiaNodeHome = ".celestia-light"
 )
 
 var (
@@ -27,8 +28,11 @@ func init() {
 }
 
 func ConfigPath(home string) string {
-	// return fmt.Sprintf("%s/%s/%s", home, DefaultDirName, ConfigFileName)
-	return fmt.Sprintf("%s/%s", home, ConfigFileName)
+	return filepath.Join(home, DefaultDirName, ConfigFileName)
+}
+
+func DirectoryPath(home string) string {
+	return filepath.Join(home, DefaultDirName)
 }
 
 type ServerConfig struct {
@@ -77,6 +81,14 @@ func DefaultServerConfig() ServerConfig {
 // BaseConfig contains the basic configurations required for the grpc server
 type BaseConfig struct {
 	ListenAddr string `toml:"laddr"`
+	Namespace  string `toml:"namespace"`
+}
+
+func DefaultBaseConfig() BaseConfig {
+	return BaseConfig{
+		ListenAddr: "0.0.0.0:4200",
+		Namespace:  "0102030405060708",
+	}
 }
 
 func DefaultBaseConfig() BaseConfig {
@@ -108,7 +120,7 @@ type BlockSubmitterConfig struct {
 	Timeout time.Duration `toml:"timeout"` // todo: actually implement a timeout
 	// BroadcastMode determines what the light client does after submitting a
 	// WirePayForMessage. 0 Unspecified, 1 Block until included in a block, 2
-	// Syncronous, 3 Asyncronous. Defualts to 1 Note: due to the difference
+	// Synchronous, 3 Asynchronous. Defaults to 1 Note: due to the difference
 	// between WirePayForMessage and PayForMessage, celestia-core currently can
 	// not properly notify the dalc that the WirePayForMessage was included in
 	// the block, so we are defaulting to 2 at the moment.
@@ -127,7 +139,7 @@ func DefaultBlockSubmitterConfig() BlockSubmitterConfig {
 		Denom:          "tia",
 		GRPCAddress:    "127.0.0.1:9090",
 		RestRPCAddress: "127.0.0.1:26657",
-		KeyringAccName: "user1",
+		KeyringAccName: "dalc",
 		BroadcastMode:  1,
 		Timeout:        time.Minute * 3,
 		ChainID:        "test",
@@ -148,7 +160,7 @@ type KeyringConfig struct {
 func DefaultKeyringConfig() KeyringConfig {
 	return KeyringConfig{
 		KeyringBackend: "test",
-		KeyringPath:    "~/.dalc",
+		KeyringPath:    filepath.Join(HomeDir, DefaultDirName),
 	}
 }
 
