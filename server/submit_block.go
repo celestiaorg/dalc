@@ -82,6 +82,7 @@ func (bs *blockSubmitter) SubmitBlock(ctx context.Context, block *optimint.Block
 	if err != nil {
 		return nil, err
 	}
+	
 	wirePFMtx, err := bs.signer.BuildSignedTx(bs.newTxBuilder(), pfmMsg)
 	if err != nil {
 		return nil, err
