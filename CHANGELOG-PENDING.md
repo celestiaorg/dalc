@@ -26,3 +26,4 @@ Month, DD, YYYY
 - Add workflow_dispatch option to lintchecker GH action
 - Create placeholder init.md doc to be checked by lintchecker gh action
 - Add docker directory w/ Dockerfile and entrypoint.sh
+- Add GH Action to automatically create a `latest` tagged docker image and push it to ghcr.io/celestiaorg/dalc:latest on every merge to `main`
