@@ -29,5 +29,5 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/jbowen93/dalc:latest
+          tags: ghcr.io/celestiaorg/dalc:latest
           file: docker/Dockerfile
