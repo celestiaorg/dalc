@@ -33,5 +33,3 @@ proto-gen:
 .PHONY: proto-gen
 proto-lint:
 	@$(DOCKER_BUF) lint --error-format=json
-
-

@@ -15,12 +15,6 @@ jobs:
     steps:
       - name: "Checkout source code"
         uses: "actions/checkout@v2"
-      # - name: Set up Go
-      #   uses: actions/setup-go@v2
-      #   with:
-      #     go-version: 1.17
-      - name: "Build"
-        run: "make docker-build"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
