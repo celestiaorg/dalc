@@ -20,7 +20,7 @@ build:
 .PHONY: build
 
 # Build DALC docker image
-build-docker:
+docker-build:
 	@docker build --platform linux/amd64 -f docker/Dockerfile -t ghcr.io/celestiaorg/dalc:latest .
 
 proto-all: proto-gen proto-lint
