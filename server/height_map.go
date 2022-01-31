@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"os"
+	"path/filepath"
 	"strconv"
 	"sync"
 )
@@ -15,6 +16,17 @@ const HeightMapFileName = "height_map.json"
 type HeightMapper struct {
 	Heights map[string]int64
 	mut     *sync.RWMutex
+}
+
+func NewHeightMapper() *HeightMapper {
+	return &HeightMapper{
+		Heights: make(map[string]int64),
+		mut:     &sync.RWMutex{},
+	}
+}
+
+func HeightMapPath(path string) string {
+	return filepath.Join(path, HeightMapFileName)
 }
 
 // Search returns the celestia height of which the optimint blocks were stored,
@@ -64,6 +76,7 @@ func DecodeHeightMapper(r io.Reader) (HeightMapper, error) {
 }
 
 func HeightMapperFromFile(path string) (HeightMapper, error) {
+	path = filepath.Join(path, HeightMapFileName)
 	file, err := os.Open(path)
 	if err != nil {
 		return HeightMapper{}, err

@@ -1,7 +1,6 @@
 package config
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -10,41 +9,23 @@ import (
 )
 
 const (
-	DefaultDirName  = ".dalc"
-	ConfigFileName  = "dalc.toml"
-	CelestiaNodeHome = ".celestia-light"
+	ConfigFileName = "optimint_server.toml"
 )
 
-var (
-	HomeDir string
-)
-
-func init() {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		log.Fatal(err)
-	}
-	HomeDir = homeDir
-}
-
-func ConfigPath(home string) string {
-	return filepath.Join(home, DefaultDirName, ConfigFileName)
-}
-
-func DirectoryPath(home string) string {
-	return filepath.Join(home, DefaultDirName)
+func ConfigPath(path string) string {
+	return filepath.Join(path, ConfigFileName)
 }
 
 type ServerConfig struct {
 	BaseConfig           `toml:"base"`
 	BlockSubmitterConfig `toml:"block-submitter"`
-	LightClientConfig    `toml:"light-client"`
 	KeyringConfig        `toml:"keyring"`
 }
 
 // Save saves the server config to a specific path
-func (cfg ServerConfig) Save(home string) error {
-	cfgFile, err := os.OpenFile(ConfigPath(home), os.O_CREATE|os.O_RDWR, 0660)
+func (cfg ServerConfig) Save(path string) error {
+	path = ConfigPath(path)
+	cfgFile, err := os.OpenFile(ConfigPath(path), os.O_CREATE|os.O_RDWR, 0660)
 	if err != nil {
 		return err
 	}
@@ -57,6 +38,7 @@ func (cfg ServerConfig) Save(home string) error {
 
 // Load attempts to load the dalc.toml file from the provided path
 func Load(path string) (ServerConfig, error) {
+	path = ConfigPath(path)
 	var cfg ServerConfig
 	rawCfg, err := os.ReadFile(path)
 	if err != nil {
@@ -70,11 +52,11 @@ func Load(path string) (ServerConfig, error) {
 }
 
 // DefaultServerConfig returns the default ServerConfig
-func DefaultServerConfig() ServerConfig {
+func DefaultServerConfig(path string) ServerConfig {
 	return ServerConfig{
 		BaseConfig:           DefaultBaseConfig(),
 		BlockSubmitterConfig: DefaultBlockSubmitterConfig(),
-		KeyringConfig:        DefaultKeyringConfig(),
+		KeyringConfig:        DefaultKeyringConfig(path),
 	}
 }
 
@@ -130,7 +112,7 @@ func DefaultBlockSubmitterConfig() BlockSubmitterConfig {
 	return BlockSubmitterConfig{
 		GasLimit:       2000000,
 		FeeAmount:      1,
-		Denom:          "tia",
+		Denom:          "celes",
 		GRPCAddress:    "127.0.0.1:9090",
 		RestRPCAddress: "127.0.0.1:26657",
 		KeyringAccName: "dalc",
@@ -151,12 +133,9 @@ type KeyringConfig struct {
 
 // DefaultKeyringConfig returns the default configuration of the Keyring portion
 // of the ServerConfig
-func DefaultKeyringConfig() KeyringConfig {
+func DefaultKeyringConfig(path string) KeyringConfig {
 	return KeyringConfig{
 		KeyringBackend: "test",
-		KeyringPath:    filepath.Join(HomeDir, DefaultDirName),
+		KeyringPath:    path,
 	}
-}
-
-type LightClientConfig struct {
 }

@@ -3,82 +3,74 @@ package test
 import (
 	"bytes"
 	"context"
-	"log"
-	"net"
 	"testing"
-	"time"
 
-	"github.com/celestiaorg/celestia-app/app"
-	"github.com/celestiaorg/dalc/config"
 	"github.com/celestiaorg/dalc/proto/dalc"
 	"github.com/celestiaorg/dalc/proto/optimint"
-	"github.com/celestiaorg/dalc/server"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/spm/cosmoscmd"
-	"google.golang.org/grpc"
 )
 
 var (
 	dalcClient dalc.DALCServiceClient
 )
 
-// TestIntegration is only meant to run when connected to a celestia full node
-// and a celestia-node
-func TestIntegration(t *testing.T) {
-	t.Skip("test requires connection to a full node and celestia-node")
-	// start a new dalc server
-	cfg := config.DefaultServerConfig()
-	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
+// // TestIntegration is only meant to run when connected to a celestia full node
+// // and a celestia-node
+// func TestIntegration(t *testing.T) {
+// 	t.Skip("test requires connection to a full node and celestia-node")
+// 	// start a new dalc server
+// 	cfg := config.DefaultServerConfig(".")
+// 	cosmoscmd.SetPrefixes(app.AccountAddressPrefix)
 
-	// this config uses the keyring that is in celestia-app
-	// this account is already funded
-	// funds are needed to submit blocks
-	// this can be replicated by using the "single-node.sh" script
-	cfg.BlockSubmitterConfig.KeyringAccName = "user1"
-	cfg.KeyringConfig.KeyringPath = "~/.celestia-app"
-	cfg.Denom = "stake"
+// 	// this config uses the keyring that is in celestia-app
+// 	// this account is already funded
+// 	// funds are needed to submit blocks
+// 	// this can be replicated by using the "single-node.sh" script
+// 	cfg.BlockSubmitterConfig.KeyringAccName = "user1"
+// 	cfg.KeyringConfig.KeyringPath = "~/.celestia-app"
+// 	cfg.Denom = "stake"
 
-	// start the DALC grpc server
-	srv, err := server.New(cfg, "~/.dalc", "~/.celestia-light")
-	if err != nil {
-		log.Fatal(err)
-	}
-	go func() {
-		// listen to the client
-		lis, err := net.Listen("tcp", "127.0.0.1:4200")
-		if err != nil {
-			log.Panic(err)
-		}
-		err = srv.Serve(lis)
-		if err != nil {
-			log.Println("failure to serve grpc: ", err)
-		}
-	}()
+// 	// start the DALC grpc server
+// 	srv, err := server.New(cfg, "~/.dalc")
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// 	go func() {
+// 		// listen to the client
+// 		lis, err := net.Listen("tcp", "127.0.0.1:4200")
+// 		if err != nil {
+// 			log.Panic(err)
+// 		}
+// 		err = srv.Serve(lis)
+// 		if err != nil {
+// 			log.Println("failure to serve grpc: ", err)
+// 		}
+// 	}()
 
-	// create a client connection to the server
-	time.Sleep(1 * time.Second)
-	conn, err := grpc.Dial("127.0.0.1:4200", grpc.WithInsecure())
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	// create a client connection to the server
+// 	time.Sleep(1 * time.Second)
+// 	conn, err := grpc.Dial("127.0.0.1:4200", grpc.WithInsecure())
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	// set the global client
-	dalcClient = dalc.NewDALCServiceClient(conn)
+// 	// set the global client
+// 	dalcClient = dalc.NewDALCServiceClient(conn)
 
-	optimintBlock := testSubmitBlock(t)
+// 	optimintBlock := testSubmitBlock(t)
 
-	testBlockAvailability(t, optimintBlock.Header)
+// 	testBlockAvailability(t, optimintBlock.Header)
 
-	req := dalc.RetrieveBlockRequest{
-		Height: optimintBlock.Header.Height,
-	}
-	resp, err := dalcClient.RetrieveBlock(context.TODO(), &req)
-	require.NoError(t, err)
-	assert.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
-	assert.Equal(t, optimintBlock, resp.Block)
-	srv.Stop()
-}
+// 	req := dalc.RetrieveBlockRequest{
+// 		Height: optimintBlock.Header.Height,
+// 	}
+// 	resp, err := dalcClient.RetrieveBlock(context.TODO(), &req)
+// 	require.NoError(t, err)
+// 	assert.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
+// 	assert.Equal(t, optimintBlock, resp.Block)
+// 	srv.Stop()
+// }
 
 //nolint:unused
 func testBlockAvailability(t *testing.T, header *optimint.Header) {

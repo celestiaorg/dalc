@@ -11,7 +11,7 @@ test:
 	go test ./...
 
 install:
-	cd ./cmd/dalc && go install
+	go install ./cmd/celestia
 
 ## build: Build DALC binary.
 build:

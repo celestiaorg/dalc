@@ -9,10 +9,11 @@ require (
 	github.com/celestiaorg/nmt v0.8.0
 	github.com/cosmos/cosmos-sdk v0.44.0
 	github.com/gogo/protobuf v1.3.3
-	github.com/spf13/cobra v1.3.0
+	github.com/ipfs/go-log/v2 v2.5.0
 	github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942
 	github.com/tendermint/spm v0.1.7
 	github.com/tendermint/tendermint v0.34.14
+	go.uber.org/fx v1.16.0
 	google.golang.org/grpc v1.42.0
 )
 
@@ -74,8 +75,10 @@ require (
 	github.com/gtank/merlin v0.1.1 // indirect
 	github.com/gtank/ristretto255 v0.1.2 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
+	github.com/hashicorp/go-retryablehttp v0.7.1-0.20211018174820-ff6d014e72d9 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hdevalence/ed25519consensus v0.0.0-20210204194344-59a8610d2b87 // indirect
@@ -101,7 +104,6 @@ require (
 	github.com/ipfs/go-ipld-format v0.2.0 // indirect
 	github.com/ipfs/go-ipns v0.1.2 // indirect
 	github.com/ipfs/go-log v1.0.5 // indirect
-	github.com/ipfs/go-log/v2 v2.4.0 // indirect
 	github.com/ipfs/go-merkledag v0.3.2 // indirect
 	github.com/ipfs/go-metrics-interface v0.0.1 // indirect
 	github.com/ipfs/go-peertaskqueue v0.4.0 // indirect
@@ -177,7 +179,7 @@ require (
 	github.com/mtibben/percent v0.2.1 // indirect
 	github.com/multiformats/go-base32 v0.0.4 // indirect
 	github.com/multiformats/go-base36 v0.1.0 // indirect
-	github.com/multiformats/go-multiaddr v0.4.1 // indirect
+	github.com/multiformats/go-multiaddr v0.5.0 // indirect
 	github.com/multiformats/go-multiaddr-dns v0.3.1 // indirect
 	github.com/multiformats/go-multiaddr-fmt v0.1.0 // indirect
 	github.com/multiformats/go-multibase v0.0.3 // indirect
@@ -206,6 +208,7 @@ require (
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
+	github.com/spf13/cobra v1.3.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.10.0 // indirect
@@ -226,9 +229,8 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/dig v1.12.0 // indirect
-	go.uber.org/fx v1.16.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
-	go.uber.org/zap v1.19.0 // indirect
+	go.uber.org/zap v1.20.0 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/net v0.0.0-20210903162142-ad29c8ab022f // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
@@ -248,7 +250,7 @@ require (
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.1.7-0.20210622111912-ef00f8ac3d76
 	github.com/celestiaorg/celestia-app => github.com/celestiaorg/celestia-app v0.0.2-0.20220110204345-94ef986e286c
-	github.com/celestiaorg/celestia-node => github.com/celestiaorg/celestia-node v0.1.1
+	github.com/celestiaorg/celestia-node => /home/evan/go/src/github.com/celestiaorg/celestia-node
 	github.com/cosmos/cosmos-sdk => github.com/celestiaorg/cosmos-sdk v0.44.1-celestia
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/ipfs/go-verifcid => github.com/celestiaorg/go-verifcid v0.0.1-lazypatch

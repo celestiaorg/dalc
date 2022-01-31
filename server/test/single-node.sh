@@ -4,7 +4,7 @@ set -o errexit -o nounset
 CHAINID="test"
 
 # Build genesis file incl account for passed address
-coins="10000000000000000stake"
+coins="10000000000000000celes"
 celestia-appd init $CHAINID --chain-id $CHAINID
 
 # create genesis account keys
@@ -18,7 +18,7 @@ celestia-appd add-genesis-account user1 $coins --keyring-backend test
 celestia-appd add-genesis-account user2 $coins --keyring-backend test 
 
 # create the first validator 
-celestia-appd gentx validator 5000000000stake --keyring-backend test --chain-id $CHAINID 
+celestia-appd gentx validator 5000000000celes --keyring-backend test --chain-id $CHAINID 
 
 # finalize the genesis file 
 celestia-appd collect-gentxs 
