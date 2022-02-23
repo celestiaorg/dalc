@@ -201,21 +201,22 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 	if err != nil {
 		return nil, err
 	}
-	if len(msgs.MessagesList) != 1 {
-		return nil, fmt.Errorf("only expected a single message: got %d", len(msgs.MessagesList))
-	}
 
-	var block optimint.Block
-	err = proto.Unmarshal(msgs.MessagesList[0].Data, &block)
-	if err != nil {
-		return nil, err
+	var blocks []*optimint.Block
+	for _, msg := range msgs.MessagesList {
+		var block optimint.Block
+		err = proto.Unmarshal(msg.Data, &block)
+		if err != nil {
+			return nil, err
+		}
+		blocks = append(blocks, &block)
 	}
 
 	return &dalc.RetrieveBlockResponse{
 		Result: &dalc.DAResponse{
 			Code: dalc.StatusCode_STATUS_CODE_SUCCESS,
 		},
-		Block: &block,
+		Blocks: blocks,
 	}, nil
 }
 

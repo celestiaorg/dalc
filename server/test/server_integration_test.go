@@ -76,7 +76,7 @@ func TestIntegration(t *testing.T) {
 	resp, err := dalcClient.RetrieveBlock(context.TODO(), &req)
 	require.NoError(t, err)
 	assert.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
-	assert.Equal(t, optimintBlock, resp.Block)
+	assert.Equal(t, optimintBlock, resp.Blocks[0])
 	srv.Stop()
 }
 
