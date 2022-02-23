@@ -6,7 +6,7 @@ Month, DD, YYYY
 
 ### BREAKING CHANGES
 
-- [server] [Return all optimint blocks in a given Celestia block #58 @evan-forbes](https://github.com/celestiaorg/dalc/pull/58)
+- [server] [Simplify API #58 @evan-forbes](https://github.com/celestiaorg/dalc/pull/58)
 
 ### FEATURES
 
