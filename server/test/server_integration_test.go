@@ -66,26 +66,26 @@ func TestIntegration(t *testing.T) {
 	// set the global client
 	dalcClient = dalc.NewDALCServiceClient(conn)
 
-	optimintBlock := testSubmitBlock(t)
+	optimintBlock, daHeight := testSubmitBlock(t)
 
-	testBlockAvailability(t, optimintBlock.Header)
+	testBlockAvailability(t, daHeight)
 
 	req := dalc.RetrieveBlockRequest{
-		Height: optimintBlock.Header.Height,
+		Height: daHeight,
 	}
 	resp, err := dalcClient.RetrieveBlock(context.TODO(), &req)
 	require.NoError(t, err)
 	assert.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
-	assert.Equal(t, optimintBlock, resp.Block)
+	assert.Equal(t, optimintBlock, resp.Blocks[0])
 	srv.Stop()
 }
 
 //nolint:unused
-func testBlockAvailability(t *testing.T, header *optimint.Header) {
+func testBlockAvailability(t *testing.T, height uint64) {
 	resp, err := dalcClient.CheckBlockAvailability(
 		context.TODO(),
 		&dalc.CheckBlockAvailabilityRequest{
-			Header: header,
+			Height: height,
 		},
 	)
 	require.NoError(t, err)
@@ -94,10 +94,10 @@ func testBlockAvailability(t *testing.T, header *optimint.Header) {
 }
 
 //nolint:unused
-func testSubmitBlock(t *testing.T) *optimint.Block {
+func testSubmitBlock(t *testing.T) (block *optimint.Block, daHeight uint64) {
 	id := []byte{1, 2, 3, 4, 5, 6, 7, 8}
 	hate := uint64(8)
-	block := &optimint.Block{
+	block = &optimint.Block{
 		Header: &optimint.Header{
 			Height:      hate,
 			NamespaceId: id,
@@ -115,7 +115,7 @@ func testSubmitBlock(t *testing.T) *optimint.Block {
 	resp, err := dalcClient.SubmitBlock(context.TODO(), &req)
 	require.NoError(t, err)
 	require.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
-	return block
+	return block, resp.Result.DataLayerHeight
 }
 
 //nolint

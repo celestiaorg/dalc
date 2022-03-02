@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"math"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/celestiaorg/celestia-node/core"
@@ -26,12 +25,6 @@ import (
 // New creates a grpc server ready to listen for incoming messages from optimint
 func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, error) {
 	logger := tmlog.NewTMLogger(os.Stdout)
-
-	// load the height map
-	hm, err := HeightMapperFromFile(filepath.Join(configPath, config.DefaultDirName, HeightMapFileName))
-	if err != nil {
-		return nil, err
-	}
 
 	// connect to a celestia full node to submit txs/query todo: change when
 	// celestia-node does this for us
@@ -76,7 +69,6 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 
 	lc := &DataAvailabilityLightClient{
 		logger:         logger,
-		heightMapper:   hm,
 		namespace:      namespace,
 		blockSubmitter: bs,
 		node:           node,
@@ -92,22 +84,12 @@ type DataAvailabilityLightClient struct {
 	logger tmlog.Logger
 
 	namespace      []byte
-	heightMapper   HeightMapper
 	blockSubmitter blockSubmitter
 	node           *cnode.Node
 }
 
 // SubmitBlock posts an optimint block to celestia
 func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq *dalc.SubmitBlockRequest) (*dalc.SubmitBlockResponse, error) {
-	// check if the block we're trying to submit already has a celestia height associated with it
-	optimintHeight := int64(blockReq.Block.Header.Height)
-	if cHeight, has := d.heightMapper.Search(optimintHeight); has {
-		return nil, PreExistingBlockMappingError{
-			CelestiaBlockHeight: cHeight,
-			OptimintBlockHeight: optimintHeight,
-		}
-	}
-
 	// submit the block
 	broadcastResp, err := d.blockSubmitter.SubmitBlock(ctx, blockReq.Block)
 	if err != nil {
@@ -127,29 +109,14 @@ func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq 
 		}, err
 	}
 
-	err = d.heightMapper.Save(int64(blockReq.Block.Header.Height), resp.Height)
-	if err != nil {
-		// TODO: we proabably need to do something more drastic than warn if a
-		// block we just submitted already exists in the height mapper
-		d.logger.Error(err.Error())
-		return nil, err
-	}
-
 	d.logger.Info("Submitted block to celstia", "height", resp.Height, "gas used", resp.GasUsed, "hash", resp.TxHash)
 	return &dalc.SubmitBlockResponse{Result: &dalc.DAResponse{Code: dalc.StatusCode_STATUS_CODE_SUCCESS}}, nil
 }
 
 // CheckBlockAvailability samples shares from the underlying data availability layer
 func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context, req *dalc.CheckBlockAvailabilityRequest) (*dalc.CheckBlockAvailabilityResponse, error) {
-	// check if the block we're trying to submit already has a celestia height associated with it
-	optimintHeight := int64(req.Header.Height)
-	celestiaHeight, has := d.heightMapper.Search(optimintHeight)
-	if !has {
-		return nil, NoAssociatedBlockError{optimintHeight}
-	}
-
 	// get the dah for the block
-	dah, err := getDAH(ctx, d.node.CoreClient, celestiaHeight)
+	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.Height))
 	if err != nil {
 		return nil, err
 	}
@@ -175,12 +142,6 @@ func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context
 }
 
 func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *dalc.RetrieveBlockRequest) (*dalc.RetrieveBlockResponse, error) {
-	// check if the block we're trying to submit already has a celestia height associated with it
-	optimintHeight := int64(req.Height)
-	if _, has := d.heightMapper.Search(optimintHeight); !has {
-		return nil, NoAssociatedBlockError{optimintHeight}
-	}
-
 	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.Height))
 	if err != nil {
 		return nil, err
@@ -201,21 +162,22 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 	if err != nil {
 		return nil, err
 	}
-	if len(msgs.MessagesList) != 1 {
-		return nil, fmt.Errorf("only expected a single message: got %d", len(msgs.MessagesList))
-	}
 
-	var block optimint.Block
-	err = proto.Unmarshal(msgs.MessagesList[0].Data, &block)
-	if err != nil {
-		return nil, err
+	var blocks []*optimint.Block
+	for _, msg := range msgs.MessagesList {
+		var block optimint.Block
+		err = proto.Unmarshal(msg.Data, &block)
+		if err != nil {
+			return nil, err
+		}
+		blocks = append(blocks, &block)
 	}
 
 	return &dalc.RetrieveBlockResponse{
 		Result: &dalc.DAResponse{
 			Code: dalc.StatusCode_STATUS_CODE_SUCCESS,
 		},
-		Block: &block,
+		Blocks: blocks,
 	}, nil
 }
 

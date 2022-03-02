@@ -66,12 +66,6 @@ func initCmd() *cobra.Command {
 				return err
 			}
 
-			hm := server.HeightMapper{}
-			err = hm.SaveToFile(filepath.Join(path, server.HeightMapFileName))
-			if err != nil {
-				return err
-			}
-
 			fmt.Println("Please add a key to the keyring via `dalc keys add`")
 			fmt.Println("Currently referencing this key using \"dalc\", but this can be changed in the config under the BlockSubmitter section")
 
