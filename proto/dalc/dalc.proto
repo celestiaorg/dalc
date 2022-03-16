@@ -14,6 +14,7 @@ enum StatusCode {
 message DAResponse {
 	StatusCode code = 1;
 	string message = 2;
+	uint64 data_layer_height = 3;
 }
 
 message SubmitBlockRequest {
@@ -25,7 +26,7 @@ message SubmitBlockResponse {
 }
 
 message CheckBlockAvailabilityRequest {
-	optimint.Header header = 1;
+	uint64 height = 1;
 }
 
 message CheckBlockAvailabilityResponse {
@@ -39,7 +40,7 @@ message RetrieveBlockRequest {
 
 message RetrieveBlockResponse {
 	DAResponse result = 1;
-	optimint.Block block = 2;
+	repeated optimint.Block blocks = 2;
 }
 
 service DALCService {

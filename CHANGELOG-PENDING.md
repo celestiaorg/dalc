@@ -6,7 +6,7 @@ Month, DD, YYYY
 
 ### BREAKING CHANGES
 
-- [go package] (Link to PR) Description @username
+- [server] [Simplify API #58 @evan-forbes](https://github.com/celestiaorg/dalc/pull/58)
 
 ### FEATURES
 
