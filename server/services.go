@@ -14,11 +14,10 @@ import (
 
 func DALC(
 	cfg config.ServerConfig,
-	hm *HeightMapper,
 	ss share.Service,
 	hstore header.Store,
 ) (*grpc.Server, error) {
-	return New(cfg, hm, ss, hstore)
+	return New(cfg, ss, hstore)
 }
 
 func LoadConfig(store node.Store) (config.ServerConfig, error) {
@@ -29,15 +28,7 @@ func LoadConfig(store node.Store) (config.ServerConfig, error) {
 	return cfg, nil
 }
 
-func LoadHeightMapper(store node.Store) (*HeightMapper, error) {
-	hm, err := HeightMapperFromFile(store.Path())
-	if err != nil {
-		return nil, err
-	}
-	return &hm, nil
-}
-
-func GRPCServer(lc fx.Lifecycle, srv *grpc.Server, cfg config.ServerConfig) {
+func GRPCServer(lc fx.Lifecycle, srv *grpc.Server, cfg config.ServerConfig) node.PluginResult {
 	lc.Append(
 		fx.Hook{
 			OnStart: func(c context.Context) error {
@@ -58,4 +49,5 @@ func GRPCServer(lc fx.Lifecycle, srv *grpc.Server, cfg config.ServerConfig) {
 			},
 		},
 	)
+	return node.PluginResult(struct{}{})
 }

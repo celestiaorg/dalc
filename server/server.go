@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/celestiaorg/celestia-node/service/header"
@@ -19,9 +18,7 @@ import (
 )
 
 // New creates a grpc server ready to listen for incoming messages from optimint
-func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, error) {
-	logger := tmlog.NewTMLogger(os.Stdout)
-
+func New(cfg config.ServerConfig, ss share.Service, hstore header.Store) (*grpc.Server, error) {
 	// connect to a celestia full node to submit txs/query todo: change when
 	// celestia-node does this for us
 	client, err := grpc.Dial(cfg.GRPCAddress, grpc.WithInsecure())
@@ -46,14 +43,14 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 	}
 
 	lc := &DataAvailabilityLightClient{
-		logger:         logger,
 		namespace:      namespace,
 		blockSubmitter: bs,
+		ss:             ss,
 		hstore:         hstore,
 	}
 
 	srv := grpc.NewServer()
-	dalc.RegisterDALCServiceServer(srv, dlc)
+	dalc.RegisterDALCServiceServer(srv, lc)
 
 	return srv, nil
 }
@@ -86,19 +83,17 @@ func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq 
 		}, err
 	}
 
-	d.logger.Info("Submitted block to celstia", "height", resp.Height, "gas used", resp.GasUsed, "hash", resp.TxHash)
 	return &dalc.SubmitBlockResponse{Result: &dalc.DAResponse{Code: dalc.StatusCode_STATUS_CODE_SUCCESS}}, nil
 }
 
 // CheckBlockAvailability samples shares from the underlying data availability layer
 func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context, req *dalc.CheckBlockAvailabilityRequest) (*dalc.CheckBlockAvailabilityResponse, error) {
-	// get the dah for the block
-	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.Height))
+	extHeader, err := d.hstore.GetByHeight(ctx, req.Height)
 	if err != nil {
 		return nil, err
 	}
 
-	err = d.ss.SharesAvailable(ctx, eHeader.DAH)
+	err = d.ss.SharesAvailable(ctx, extHeader.DAH)
 	switch err {
 	case nil:
 		return &dalc.CheckBlockAvailabilityResponse{
@@ -119,13 +114,13 @@ func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context
 }
 
 func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *dalc.RetrieveBlockRequest) (*dalc.RetrieveBlockResponse, error) {
-	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.Height))
+	extHeader, err := d.hstore.GetByHeight(ctx, req.Height)
 	if err != nil {
 		return nil, err
 	}
 
 	// todo include namespace inside the request, not preconfigured
-	shares, err := d.ss.GetSharesByNamespace(ctx, eHeader.DAH, d.namespace)
+	shares, err := d.ss.GetSharesByNamespace(ctx, extHeader.DAH, d.namespace)
 	if err != nil {
 		return nil, err
 	}
