@@ -25,7 +25,7 @@ type ServerConfig struct {
 // Save saves the server config to a specific path
 func (cfg ServerConfig) Save(path string) error {
 	path = ConfigPath(path)
-	cfgFile, err := os.OpenFile(ConfigPath(path), os.O_CREATE|os.O_RDWR, 0660)
+	cfgFile, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, 0660)
 	if err != nil {
 		return err
 	}

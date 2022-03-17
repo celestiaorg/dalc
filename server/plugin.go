@@ -20,7 +20,7 @@ func (onp *NodePlugin) Initialize(path string) error {
 	cfgPath := config.ConfigPath(path)
 	if !utils.Exists(cfgPath) {
 		cfg := config.DefaultServerConfig(path)
-		err := cfg.Save(cfgPath)
+		err := cfg.Save(path)
 		if err != nil {
 			return err
 		}

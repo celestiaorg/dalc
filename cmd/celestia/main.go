@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/celestiaorg/celestia-app/app"
@@ -18,7 +19,7 @@ func main() {
 
 	root := nodecmd.NewRootCmd(&plugin)
 
-	if err := root.Execute(); err != nil {
+	if err := root.ExecuteContext(nodecmd.WithEnv(context.Background())); err != nil {
 		log.Fatal(err)
 	}
 }
