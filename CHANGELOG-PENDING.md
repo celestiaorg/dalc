@@ -10,6 +10,7 @@ Month, DD, YYYY
 
 ### FEATURES
 
+- [plugin] [Make the dalc a celestia-node plugin #55 @evan-forbes](https://github.com/celestiaorg/dalc/pull/55)
 - [server] [CheckBlockAvailability method #17 @evan-forbes](https://github.com/celestiaorg/dalc/pull/17)
 - [server] [RetrieveBlock method #17 @evan-forbes](https://github.com/celestiaorg/dalc/pull/17)
 
