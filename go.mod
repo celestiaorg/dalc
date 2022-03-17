@@ -33,7 +33,7 @@ require (
 	github.com/celestiaorg/rsmt2d v0.3.0 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
-	github.com/coinbase/rosetta-sdk-go v0.7.0 // indirect
+	github.com/coinbase/rosetta-sdk-go v0.6.10 // indirect
 	github.com/confio/ics23/go v0.6.6 // indirect
 	github.com/containerd/cgroups v1.0.1 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
@@ -264,6 +264,7 @@ replace (
 	github.com/cosmos/cosmos-sdk => github.com/celestiaorg/cosmos-sdk v0.44.1-celestia
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/ipfs/go-verifcid => github.com/celestiaorg/go-verifcid v0.0.1-lazypatch
+	github.com/libp2p/go-libp2p-pubsub v0.5.7-0.20211029175501-5c90105738cf => github.com/celestiaorg/go-libp2p-pubsub v0.5.7-0.20220202152246-c33ecdf03b34
 	github.com/tendermint/tendermint => github.com/celestiaorg/celestia-core v0.34.14-celestia.0.20220228062426-721562a3544d
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
