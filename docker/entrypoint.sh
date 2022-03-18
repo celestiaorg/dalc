@@ -2,7 +2,7 @@
 
 set -e 
 
-if [ "$1" = 'dalc' ]; then
+if [ "$1" = 'celestia' ]; then
     exec ./"$@" "--"
 fi
 

@@ -16,7 +16,7 @@ install:
 ## build: Build DALC binary.
 build:
 	@echo "--> Building DALC"
-	@go build ./cmd/dalc
+	@go build ./cmd/celestia
 .PHONY: build
 
 # Build DALC docker image
