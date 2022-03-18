@@ -116,7 +116,7 @@ func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq 
 // CheckBlockAvailability samples shares from the underlying data availability layer
 func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context, req *dalc.CheckBlockAvailabilityRequest) (*dalc.CheckBlockAvailabilityResponse, error) {
 	// get the dah for the block
-	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.Height))
+	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.DataLayerHeight))
 	if err != nil {
 		return nil, err
 	}
@@ -141,8 +141,8 @@ func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context
 	}
 }
 
-func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *dalc.RetrieveBlockRequest) (*dalc.RetrieveBlockResponse, error) {
-	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.Height))
+func (d *DataAvailabilityLightClient) RetrieveBlocks(ctx context.Context, req *dalc.RetrieveBlocksRequest) (*dalc.RetrieveBlocksResponse, error) {
+	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.DataLayerHeight))
 	if err != nil {
 		return nil, err
 	}
@@ -173,7 +173,7 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 		blocks = append(blocks, &block)
 	}
 
-	return &dalc.RetrieveBlockResponse{
+	return &dalc.RetrieveBlocksResponse{
 		Result: &dalc.DAResponse{
 			Code: dalc.StatusCode_STATUS_CODE_SUCCESS,
 		},

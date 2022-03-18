@@ -70,10 +70,10 @@ func TestIntegration(t *testing.T) {
 
 	testBlockAvailability(t, daHeight)
 
-	req := dalc.RetrieveBlockRequest{
-		Height: daHeight,
+	req := dalc.RetrieveBlocksRequest{
+		DataLayerHeight: daHeight,
 	}
-	resp, err := dalcClient.RetrieveBlock(context.TODO(), &req)
+	resp, err := dalcClient.RetrieveBlocks(context.TODO(), &req)
 	require.NoError(t, err)
 	assert.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
 	assert.Equal(t, optimintBlock, resp.Blocks[0])
@@ -85,7 +85,7 @@ func testBlockAvailability(t *testing.T, height uint64) {
 	resp, err := dalcClient.CheckBlockAvailability(
 		context.TODO(),
 		&dalc.CheckBlockAvailabilityRequest{
-			Height: height,
+			DataLayerHeight: height,
 		},
 	)
 	require.NoError(t, err)
@@ -120,11 +120,11 @@ func testSubmitBlock(t *testing.T) (block *optimint.Block, daHeight uint64) {
 
 //nolint
 func testRetrieveBlock(t *testing.T, block *optimint.Block) {
-	req := &dalc.RetrieveBlockRequest{
-		Height: block.Header.Height,
+	req := &dalc.RetrieveBlocksRequest{
+		DataLayerHeight: block.Header.Height,
 	}
 
-	resp, err := dalcClient.RetrieveBlock(context.TODO(), req)
+	resp, err := dalcClient.RetrieveBlocks(context.TODO(), req)
 	require.NoError(t, err)
 	require.Equal(t, dalc.StatusCode_STATUS_CODE_SUCCESS, resp.Result.Code)
 
