@@ -207,7 +207,7 @@ func (m *SubmitBlockResponse) GetResult() *DAResponse {
 }
 
 type CheckBlockAvailabilityRequest struct {
-	Height uint64 `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+	DataLayerHeight uint64 `protobuf:"varint,1,opt,name=data_layer_height,json=dataLayerHeight,proto3" json:"data_layer_height,omitempty"`
 }
 
 func (m *CheckBlockAvailabilityRequest) Reset()         { *m = CheckBlockAvailabilityRequest{} }
@@ -243,9 +243,9 @@ func (m *CheckBlockAvailabilityRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_CheckBlockAvailabilityRequest proto.InternalMessageInfo
 
-func (m *CheckBlockAvailabilityRequest) GetHeight() uint64 {
+func (m *CheckBlockAvailabilityRequest) GetDataLayerHeight() uint64 {
 	if m != nil {
-		return m.Height
+		return m.DataLayerHeight
 	}
 	return 0
 }
@@ -302,22 +302,22 @@ func (m *CheckBlockAvailabilityResponse) GetDataAvailable() bool {
 	return false
 }
 
-type RetrieveBlockRequest struct {
-	Height uint64 `protobuf:"varint,1,opt,name=height,proto3" json:"height,omitempty"`
+type RetrieveBlocksRequest struct {
+	DataLayerHeight uint64 `protobuf:"varint,1,opt,name=data_layer_height,json=dataLayerHeight,proto3" json:"data_layer_height,omitempty"`
 }
 
-func (m *RetrieveBlockRequest) Reset()         { *m = RetrieveBlockRequest{} }
-func (m *RetrieveBlockRequest) String() string { return proto.CompactTextString(m) }
-func (*RetrieveBlockRequest) ProtoMessage()    {}
-func (*RetrieveBlockRequest) Descriptor() ([]byte, []int) {
+func (m *RetrieveBlocksRequest) Reset()         { *m = RetrieveBlocksRequest{} }
+func (m *RetrieveBlocksRequest) String() string { return proto.CompactTextString(m) }
+func (*RetrieveBlocksRequest) ProtoMessage()    {}
+func (*RetrieveBlocksRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45d7d8eda2693dc1, []int{5}
 }
-func (m *RetrieveBlockRequest) XXX_Unmarshal(b []byte) error {
+func (m *RetrieveBlocksRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *RetrieveBlockRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *RetrieveBlocksRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_RetrieveBlockRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_RetrieveBlocksRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -327,42 +327,42 @@ func (m *RetrieveBlockRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *RetrieveBlockRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RetrieveBlockRequest.Merge(m, src)
+func (m *RetrieveBlocksRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RetrieveBlocksRequest.Merge(m, src)
 }
-func (m *RetrieveBlockRequest) XXX_Size() int {
+func (m *RetrieveBlocksRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *RetrieveBlockRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_RetrieveBlockRequest.DiscardUnknown(m)
+func (m *RetrieveBlocksRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RetrieveBlocksRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_RetrieveBlockRequest proto.InternalMessageInfo
+var xxx_messageInfo_RetrieveBlocksRequest proto.InternalMessageInfo
 
-func (m *RetrieveBlockRequest) GetHeight() uint64 {
+func (m *RetrieveBlocksRequest) GetDataLayerHeight() uint64 {
 	if m != nil {
-		return m.Height
+		return m.DataLayerHeight
 	}
 	return 0
 }
 
-type RetrieveBlockResponse struct {
+type RetrieveBlocksResponse struct {
 	Result *DAResponse       `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
 	Blocks []*optimint.Block `protobuf:"bytes,2,rep,name=blocks,proto3" json:"blocks,omitempty"`
 }
 
-func (m *RetrieveBlockResponse) Reset()         { *m = RetrieveBlockResponse{} }
-func (m *RetrieveBlockResponse) String() string { return proto.CompactTextString(m) }
-func (*RetrieveBlockResponse) ProtoMessage()    {}
-func (*RetrieveBlockResponse) Descriptor() ([]byte, []int) {
+func (m *RetrieveBlocksResponse) Reset()         { *m = RetrieveBlocksResponse{} }
+func (m *RetrieveBlocksResponse) String() string { return proto.CompactTextString(m) }
+func (*RetrieveBlocksResponse) ProtoMessage()    {}
+func (*RetrieveBlocksResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_45d7d8eda2693dc1, []int{6}
 }
-func (m *RetrieveBlockResponse) XXX_Unmarshal(b []byte) error {
+func (m *RetrieveBlocksResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *RetrieveBlockResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *RetrieveBlocksResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_RetrieveBlockResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_RetrieveBlocksResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -372,26 +372,26 @@ func (m *RetrieveBlockResponse) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *RetrieveBlockResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RetrieveBlockResponse.Merge(m, src)
+func (m *RetrieveBlocksResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RetrieveBlocksResponse.Merge(m, src)
 }
-func (m *RetrieveBlockResponse) XXX_Size() int {
+func (m *RetrieveBlocksResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *RetrieveBlockResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_RetrieveBlockResponse.DiscardUnknown(m)
+func (m *RetrieveBlocksResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_RetrieveBlocksResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_RetrieveBlockResponse proto.InternalMessageInfo
+var xxx_messageInfo_RetrieveBlocksResponse proto.InternalMessageInfo
 
-func (m *RetrieveBlockResponse) GetResult() *DAResponse {
+func (m *RetrieveBlocksResponse) GetResult() *DAResponse {
 	if m != nil {
 		return m.Result
 	}
 	return nil
 }
 
-func (m *RetrieveBlockResponse) GetBlocks() []*optimint.Block {
+func (m *RetrieveBlocksResponse) GetBlocks() []*optimint.Block {
 	if m != nil {
 		return m.Blocks
 	}
@@ -405,47 +405,47 @@ func init() {
 	proto.RegisterType((*SubmitBlockResponse)(nil), "dalc.SubmitBlockResponse")
 	proto.RegisterType((*CheckBlockAvailabilityRequest)(nil), "dalc.CheckBlockAvailabilityRequest")
 	proto.RegisterType((*CheckBlockAvailabilityResponse)(nil), "dalc.CheckBlockAvailabilityResponse")
-	proto.RegisterType((*RetrieveBlockRequest)(nil), "dalc.RetrieveBlockRequest")
-	proto.RegisterType((*RetrieveBlockResponse)(nil), "dalc.RetrieveBlockResponse")
+	proto.RegisterType((*RetrieveBlocksRequest)(nil), "dalc.RetrieveBlocksRequest")
+	proto.RegisterType((*RetrieveBlocksResponse)(nil), "dalc.RetrieveBlocksResponse")
 }
 
 func init() { proto.RegisterFile("dalc/dalc.proto", fileDescriptor_45d7d8eda2693dc1) }
 
 var fileDescriptor_45d7d8eda2693dc1 = []byte{
-	// 525 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0xcf, 0x6e, 0xda, 0x4e,
-	0x10, 0xc6, 0xc0, 0x8f, 0x5f, 0x3b, 0x28, 0x81, 0x6c, 0x9a, 0xe0, 0x12, 0xd5, 0x42, 0x6e, 0xd2,
-	0xa2, 0x1c, 0x40, 0xa2, 0x87, 0x1e, 0x7a, 0x68, 0x89, 0x71, 0x55, 0xaa, 0xb4, 0x54, 0x6b, 0xb8,
-	0xf4, 0x82, 0x16, 0x33, 0x82, 0x6d, 0x4c, 0x4c, 0xec, 0x35, 0x6a, 0x5e, 0xa0, 0xe7, 0x3e, 0x56,
-	0x8f, 0x39, 0xf6, 0x58, 0xc1, 0x8b, 0x54, 0x5e, 0xdb, 0x09, 0xa4, 0x4e, 0xa4, 0x5c, 0xac, 0x99,
-	0xf9, 0xe6, 0x1b, 0x7f, 0xf3, 0xc7, 0x86, 0xd2, 0x98, 0x39, 0x76, 0x33, 0x7c, 0x34, 0xe6, 0x9e,
-	0x2b, 0x5c, 0x92, 0x0f, 0xed, 0x6a, 0xc5, 0x9d, 0x0b, 0x3e, 0xe3, 0xe7, 0xa2, 0x99, 0x18, 0x11,
-	0xac, 0x7f, 0x07, 0xe8, 0xb4, 0x29, 0xfa, 0x73, 0xf7, 0xdc, 0x47, 0x72, 0x08, 0x79, 0xdb, 0x1d,
-	0xa3, 0xaa, 0xd4, 0x94, 0xfa, 0x76, 0xab, 0xdc, 0x90, 0x75, 0x2c, 0xc1, 0x44, 0xe0, 0x1b, 0xee,
-	0x18, 0xa9, 0x44, 0x89, 0x0a, 0xff, 0xcf, 0xd0, 0xf7, 0xd9, 0x04, 0xd5, 0x6c, 0x4d, 0xa9, 0x3f,
-	0xa6, 0x89, 0x4b, 0x8e, 0x61, 0x67, 0xcc, 0x04, 0x1b, 0x3a, 0xec, 0x12, 0xbd, 0xe1, 0x14, 0xf9,
-	0x64, 0x2a, 0xd4, 0x5c, 0x4d, 0xa9, 0xe7, 0x69, 0x29, 0x04, 0x4e, 0xc3, 0xf8, 0x07, 0x19, 0xd6,
-	0xdf, 0x00, 0xb1, 0x82, 0xd1, 0x8c, 0x8b, 0x13, 0xc7, 0xb5, 0xcf, 0x28, 0x5e, 0x04, 0xe8, 0x0b,
-	0x72, 0x04, 0xff, 0x8d, 0x42, 0x5f, 0x4a, 0x28, 0xb6, 0x4a, 0x8d, 0x6b, 0xbd, 0x51, 0x5a, 0x84,
-	0xea, 0x6f, 0x61, 0x77, 0x83, 0x1c, 0xeb, 0xaf, 0x43, 0xc1, 0x43, 0x3f, 0x70, 0x44, 0x4c, 0x8f,
-	0x3b, 0xb8, 0xe9, 0x90, 0xc6, 0xb8, 0xfe, 0x1a, 0x9e, 0x19, 0x53, 0xb4, 0xcf, 0x24, 0xbf, 0xbd,
-	0x60, 0xdc, 0x61, 0x23, 0xee, 0x70, 0x71, 0x99, 0x08, 0xd9, 0x87, 0x42, 0xac, 0x5f, 0x91, 0xfa,
-	0x63, 0x4f, 0xbf, 0x00, 0xed, 0x2e, 0xe2, 0x43, 0x45, 0x90, 0x23, 0xd8, 0x96, 0xe3, 0x62, 0x51,
-	0x19, 0x27, 0x9a, 0xe7, 0x23, 0xba, 0x15, 0x46, 0xdb, 0x49, 0x50, 0x6f, 0xc0, 0x13, 0x8a, 0xc2,
-	0xe3, 0xb8, 0xc0, 0x8d, 0x59, 0xdd, 0x25, 0xf1, 0x1b, 0xec, 0xdd, 0xca, 0x7f, 0xb0, 0xb2, 0x97,
-	0x50, 0x90, 0x83, 0xf6, 0xd5, 0x6c, 0x2d, 0x97, 0xb6, 0x87, 0x18, 0x3e, 0xf6, 0x00, 0x6e, 0xee,
-	0x83, 0x1c, 0x40, 0xc5, 0xea, 0xb7, 0xfb, 0x03, 0x6b, 0x68, 0xf4, 0x3a, 0xe6, 0x70, 0xf0, 0xd9,
-	0xfa, 0x62, 0x1a, 0xdd, 0xf7, 0x5d, 0xb3, 0x53, 0xce, 0x90, 0x0a, 0xec, 0xae, 0x83, 0xd6, 0xc0,
-	0x30, 0x4c, 0xcb, 0x2a, 0x2b, 0xb7, 0x81, 0x7e, 0xf7, 0x93, 0xd9, 0x1b, 0xf4, 0xcb, 0x59, 0xb2,
-	0x07, 0x3b, 0xeb, 0x80, 0x49, 0x69, 0x8f, 0x96, 0x73, 0xad, 0x1f, 0x59, 0x28, 0x76, 0xda, 0xa7,
-	0x86, 0x85, 0xde, 0x82, 0xdb, 0x48, 0x3a, 0x50, 0x5c, 0x3b, 0x06, 0xa2, 0xc6, 0x67, 0xfb, 0xcf,
-	0x71, 0x55, 0x9f, 0xa6, 0x20, 0x51, 0xe3, 0x7a, 0x86, 0x20, 0xec, 0xa7, 0x2f, 0x96, 0x3c, 0x8f,
-	0x68, 0xf7, 0xde, 0x4b, 0xf5, 0xf0, 0xfe, 0xa4, 0xeb, 0xd7, 0x7c, 0x84, 0xad, 0x8d, 0xe5, 0x90,
-	0x6a, 0x44, 0x4c, 0xdb, 0x70, 0xf5, 0x20, 0x15, 0x4b, 0x6a, 0x9d, 0xbc, 0xfb, 0xb5, 0xd4, 0x94,
-	0xab, 0xa5, 0xa6, 0xfc, 0x59, 0x6a, 0xca, 0xcf, 0x95, 0x96, 0xb9, 0x5a, 0x69, 0x99, 0xdf, 0x2b,
-	0x2d, 0xf3, 0xf5, 0xc5, 0x84, 0x8b, 0x69, 0x30, 0x6a, 0xd8, 0xee, 0xac, 0x69, 0xa3, 0x83, 0xbe,
-	0xe0, 0xcc, 0xf5, 0x26, 0xf2, 0xc7, 0xd0, 0x94, 0x5f, 0xbe, 0x34, 0x47, 0x05, 0x69, 0xbf, 0xfa,
-	0x1b, 0x00, 0x00, 0xff, 0xff, 0x83, 0x5f, 0x7e, 0xe8, 0x37, 0x04, 0x00, 0x00,
+	// 521 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0xc1, 0x6e, 0xda, 0x4c,
+	0x10, 0xc7, 0x31, 0xf0, 0xf1, 0xb5, 0x83, 0x0a, 0x64, 0xa3, 0x04, 0x97, 0xb4, 0x16, 0x72, 0x93,
+	0x16, 0xe5, 0x00, 0x12, 0x3d, 0xf6, 0xd0, 0x12, 0xe3, 0xaa, 0xa8, 0x49, 0xa9, 0xd6, 0x70, 0xe9,
+	0x05, 0x2d, 0x66, 0x04, 0x2b, 0x4c, 0x4c, 0xbc, 0x0b, 0x6a, 0x1e, 0xa1, 0xb7, 0x3e, 0x56, 0x8f,
+	0x39, 0xf6, 0x58, 0xc1, 0x8b, 0x54, 0x5e, 0x9b, 0x84, 0xa4, 0x6e, 0xa4, 0xf4, 0x62, 0xcd, 0xce,
+	0x6f, 0x67, 0xe6, 0x3f, 0x9e, 0xd1, 0x42, 0x71, 0xc4, 0x3c, 0xb7, 0x11, 0x7e, 0xea, 0xf3, 0xc0,
+	0x97, 0x3e, 0xc9, 0x86, 0x76, 0xa5, 0xec, 0xcf, 0x25, 0x9f, 0xf1, 0x73, 0xd9, 0xd8, 0x18, 0x11,
+	0x36, 0xbf, 0x02, 0xb4, 0x5b, 0x14, 0xc5, 0xdc, 0x3f, 0x17, 0x48, 0x0e, 0x21, 0xeb, 0xfa, 0x23,
+	0xd4, 0xb5, 0xaa, 0x56, 0x2b, 0x34, 0x4b, 0x75, 0x95, 0xc7, 0x91, 0x4c, 0x2e, 0x84, 0xe5, 0x8f,
+	0x90, 0x2a, 0x4a, 0x74, 0xf8, 0x7f, 0x86, 0x42, 0xb0, 0x31, 0xea, 0xe9, 0xaa, 0x56, 0x7b, 0x4c,
+	0x37, 0x47, 0x72, 0x0c, 0x3b, 0x23, 0x26, 0xd9, 0xc0, 0x63, 0x97, 0x18, 0x0c, 0x26, 0xc8, 0xc7,
+	0x13, 0xa9, 0x67, 0xaa, 0x5a, 0x2d, 0x4b, 0x8b, 0x21, 0x38, 0x0d, 0xfd, 0x1f, 0x94, 0xdb, 0x7c,
+	0x03, 0xc4, 0x59, 0x0c, 0x67, 0x5c, 0x9e, 0x78, 0xbe, 0x3b, 0xa5, 0x78, 0xb1, 0x40, 0x21, 0xc9,
+	0x11, 0xfc, 0x37, 0x0c, 0xcf, 0x4a, 0x42, 0xbe, 0x59, 0xac, 0x5f, 0xeb, 0x8d, 0xae, 0x45, 0xd4,
+	0x7c, 0x0b, 0xbb, 0xb7, 0x82, 0x63, 0xfd, 0x35, 0xc8, 0x05, 0x28, 0x16, 0x9e, 0x8c, 0xc3, 0xe3,
+	0x0e, 0x6e, 0x3a, 0xa4, 0x31, 0x37, 0x3f, 0xc2, 0x73, 0x6b, 0x82, 0xee, 0x54, 0xc5, 0xb7, 0x96,
+	0x8c, 0x7b, 0x6c, 0xc8, 0x3d, 0x2e, 0x2f, 0x37, 0x42, 0x12, 0x5b, 0xd1, 0x92, 0x5b, 0xb9, 0x00,
+	0xe3, 0x6f, 0xc9, 0x1e, 0x2a, 0x8c, 0x1c, 0x41, 0x41, 0xd5, 0x65, 0x51, 0x1a, 0x2f, 0xfa, 0xc7,
+	0x8f, 0xe8, 0x93, 0xd0, 0xdb, 0xda, 0x38, 0x4d, 0x0b, 0xf6, 0x28, 0xca, 0x80, 0xe3, 0x12, 0x55,
+	0x55, 0xf1, 0x2f, 0xba, 0xa7, 0xb0, 0x7f, 0x37, 0xc9, 0x83, 0xf5, 0xbe, 0x82, 0x9c, 0x1a, 0x89,
+	0xd0, 0xd3, 0xd5, 0x4c, 0xd2, 0xc4, 0x62, 0x7c, 0x1c, 0x00, 0xdc, 0x6c, 0x12, 0x39, 0x80, 0xb2,
+	0xd3, 0x6b, 0xf5, 0xfa, 0xce, 0xc0, 0xea, 0xb6, 0xed, 0x41, 0xff, 0x93, 0xf3, 0xd9, 0xb6, 0x3a,
+	0xef, 0x3b, 0x76, 0xbb, 0x94, 0x22, 0x65, 0xd8, 0xdd, 0x86, 0x4e, 0xdf, 0xb2, 0x6c, 0xc7, 0x29,
+	0x69, 0x77, 0x41, 0xaf, 0x73, 0x66, 0x77, 0xfb, 0xbd, 0x52, 0x9a, 0xec, 0xc1, 0xce, 0x36, 0xb0,
+	0x29, 0xed, 0xd2, 0x52, 0xa6, 0xf9, 0x2d, 0x0d, 0xf9, 0x76, 0xeb, 0xd4, 0x72, 0x30, 0x58, 0x72,
+	0x17, 0x49, 0x1b, 0xf2, 0x5b, 0x6b, 0x43, 0xf4, 0x78, 0xc1, 0xff, 0x58, 0xc3, 0xca, 0xd3, 0x04,
+	0x12, 0x35, 0x6e, 0xa6, 0x08, 0xc2, 0x7e, 0xf2, 0xb8, 0xc9, 0x8b, 0x28, 0xec, 0xde, 0xcd, 0xaa,
+	0x1c, 0xde, 0x7f, 0xe9, 0xba, 0xcc, 0x19, 0x14, 0x6e, 0x4f, 0x87, 0x1c, 0x44, 0x91, 0x89, 0x83,
+	0xaf, 0x3c, 0x4b, 0x86, 0x9b, 0x74, 0x27, 0xef, 0x7e, 0xac, 0x0c, 0xed, 0x6a, 0x65, 0x68, 0xbf,
+	0x56, 0x86, 0xf6, 0x7d, 0x6d, 0xa4, 0xae, 0xd6, 0x46, 0xea, 0xe7, 0xda, 0x48, 0x7d, 0x79, 0x39,
+	0xe6, 0x72, 0xb2, 0x18, 0xd6, 0x5d, 0x7f, 0xd6, 0x70, 0xd1, 0x43, 0x21, 0x39, 0xf3, 0x83, 0xb1,
+	0x7a, 0x45, 0x1a, 0xea, 0x99, 0x50, 0xe6, 0x30, 0xa7, 0xec, 0xd7, 0xbf, 0x03, 0x00, 0x00, 0xff,
+	0xff, 0xf5, 0x33, 0x51, 0x92, 0x64, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -462,7 +462,7 @@ const _ = grpc.SupportPackageIsVersion4
 type DALCServiceClient interface {
 	SubmitBlock(ctx context.Context, in *SubmitBlockRequest, opts ...grpc.CallOption) (*SubmitBlockResponse, error)
 	CheckBlockAvailability(ctx context.Context, in *CheckBlockAvailabilityRequest, opts ...grpc.CallOption) (*CheckBlockAvailabilityResponse, error)
-	RetrieveBlock(ctx context.Context, in *RetrieveBlockRequest, opts ...grpc.CallOption) (*RetrieveBlockResponse, error)
+	RetrieveBlocks(ctx context.Context, in *RetrieveBlocksRequest, opts ...grpc.CallOption) (*RetrieveBlocksResponse, error)
 }
 
 type dALCServiceClient struct {
@@ -491,9 +491,9 @@ func (c *dALCServiceClient) CheckBlockAvailability(ctx context.Context, in *Chec
 	return out, nil
 }
 
-func (c *dALCServiceClient) RetrieveBlock(ctx context.Context, in *RetrieveBlockRequest, opts ...grpc.CallOption) (*RetrieveBlockResponse, error) {
-	out := new(RetrieveBlockResponse)
-	err := c.cc.Invoke(ctx, "/dalc.DALCService/RetrieveBlock", in, out, opts...)
+func (c *dALCServiceClient) RetrieveBlocks(ctx context.Context, in *RetrieveBlocksRequest, opts ...grpc.CallOption) (*RetrieveBlocksResponse, error) {
+	out := new(RetrieveBlocksResponse)
+	err := c.cc.Invoke(ctx, "/dalc.DALCService/RetrieveBlocks", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -504,7 +504,7 @@ func (c *dALCServiceClient) RetrieveBlock(ctx context.Context, in *RetrieveBlock
 type DALCServiceServer interface {
 	SubmitBlock(context.Context, *SubmitBlockRequest) (*SubmitBlockResponse, error)
 	CheckBlockAvailability(context.Context, *CheckBlockAvailabilityRequest) (*CheckBlockAvailabilityResponse, error)
-	RetrieveBlock(context.Context, *RetrieveBlockRequest) (*RetrieveBlockResponse, error)
+	RetrieveBlocks(context.Context, *RetrieveBlocksRequest) (*RetrieveBlocksResponse, error)
 }
 
 // UnimplementedDALCServiceServer can be embedded to have forward compatible implementations.
@@ -517,8 +517,8 @@ func (*UnimplementedDALCServiceServer) SubmitBlock(ctx context.Context, req *Sub
 func (*UnimplementedDALCServiceServer) CheckBlockAvailability(ctx context.Context, req *CheckBlockAvailabilityRequest) (*CheckBlockAvailabilityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckBlockAvailability not implemented")
 }
-func (*UnimplementedDALCServiceServer) RetrieveBlock(ctx context.Context, req *RetrieveBlockRequest) (*RetrieveBlockResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RetrieveBlock not implemented")
+func (*UnimplementedDALCServiceServer) RetrieveBlocks(ctx context.Context, req *RetrieveBlocksRequest) (*RetrieveBlocksResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RetrieveBlocks not implemented")
 }
 
 func RegisterDALCServiceServer(s *grpc.Server, srv DALCServiceServer) {
@@ -561,20 +561,20 @@ func _DALCService_CheckBlockAvailability_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DALCService_RetrieveBlock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RetrieveBlockRequest)
+func _DALCService_RetrieveBlocks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RetrieveBlocksRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DALCServiceServer).RetrieveBlock(ctx, in)
+		return srv.(DALCServiceServer).RetrieveBlocks(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dalc.DALCService/RetrieveBlock",
+		FullMethod: "/dalc.DALCService/RetrieveBlocks",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DALCServiceServer).RetrieveBlock(ctx, req.(*RetrieveBlockRequest))
+		return srv.(DALCServiceServer).RetrieveBlocks(ctx, req.(*RetrieveBlocksRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -592,8 +592,8 @@ var _DALCService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _DALCService_CheckBlockAvailability_Handler,
 		},
 		{
-			MethodName: "RetrieveBlock",
-			Handler:    _DALCService_RetrieveBlock_Handler,
+			MethodName: "RetrieveBlocks",
+			Handler:    _DALCService_RetrieveBlocks_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -730,8 +730,8 @@ func (m *CheckBlockAvailabilityRequest) MarshalToSizedBuffer(dAtA []byte) (int, 
 	_ = i
 	var l int
 	_ = l
-	if m.Height != 0 {
-		i = encodeVarintDalc(dAtA, i, uint64(m.Height))
+	if m.DataLayerHeight != 0 {
+		i = encodeVarintDalc(dAtA, i, uint64(m.DataLayerHeight))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -783,7 +783,7 @@ func (m *CheckBlockAvailabilityResponse) MarshalToSizedBuffer(dAtA []byte) (int,
 	return len(dAtA) - i, nil
 }
 
-func (m *RetrieveBlockRequest) Marshal() (dAtA []byte, err error) {
+func (m *RetrieveBlocksRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -793,25 +793,25 @@ func (m *RetrieveBlockRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *RetrieveBlockRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *RetrieveBlocksRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *RetrieveBlockRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *RetrieveBlocksRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Height != 0 {
-		i = encodeVarintDalc(dAtA, i, uint64(m.Height))
+	if m.DataLayerHeight != 0 {
+		i = encodeVarintDalc(dAtA, i, uint64(m.DataLayerHeight))
 		i--
 		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *RetrieveBlockResponse) Marshal() (dAtA []byte, err error) {
+func (m *RetrieveBlocksResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -821,12 +821,12 @@ func (m *RetrieveBlockResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *RetrieveBlockResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *RetrieveBlocksResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *RetrieveBlockResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *RetrieveBlocksResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -922,8 +922,8 @@ func (m *CheckBlockAvailabilityRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Height != 0 {
-		n += 1 + sovDalc(uint64(m.Height))
+	if m.DataLayerHeight != 0 {
+		n += 1 + sovDalc(uint64(m.DataLayerHeight))
 	}
 	return n
 }
@@ -944,19 +944,19 @@ func (m *CheckBlockAvailabilityResponse) Size() (n int) {
 	return n
 }
 
-func (m *RetrieveBlockRequest) Size() (n int) {
+func (m *RetrieveBlocksRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Height != 0 {
-		n += 1 + sovDalc(uint64(m.Height))
+	if m.DataLayerHeight != 0 {
+		n += 1 + sovDalc(uint64(m.DataLayerHeight))
 	}
 	return n
 }
 
-func (m *RetrieveBlockResponse) Size() (n int) {
+func (m *RetrieveBlocksResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1304,9 +1304,9 @@ func (m *CheckBlockAvailabilityRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DataLayerHeight", wireType)
 			}
-			m.Height = 0
+			m.DataLayerHeight = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowDalc
@@ -1316,7 +1316,7 @@ func (m *CheckBlockAvailabilityRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Height |= uint64(b&0x7F) << shift
+				m.DataLayerHeight |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1448,7 +1448,7 @@ func (m *CheckBlockAvailabilityResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *RetrieveBlockRequest) Unmarshal(dAtA []byte) error {
+func (m *RetrieveBlocksRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1471,17 +1471,17 @@ func (m *RetrieveBlockRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: RetrieveBlockRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: RetrieveBlocksRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: RetrieveBlockRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: RetrieveBlocksRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DataLayerHeight", wireType)
 			}
-			m.Height = 0
+			m.DataLayerHeight = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowDalc
@@ -1491,7 +1491,7 @@ func (m *RetrieveBlockRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Height |= uint64(b&0x7F) << shift
+				m.DataLayerHeight |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1517,7 +1517,7 @@ func (m *RetrieveBlockRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *RetrieveBlockResponse) Unmarshal(dAtA []byte) error {
+func (m *RetrieveBlocksResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1540,10 +1540,10 @@ func (m *RetrieveBlockResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: RetrieveBlockResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: RetrieveBlocksResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: RetrieveBlockResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: RetrieveBlocksResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
