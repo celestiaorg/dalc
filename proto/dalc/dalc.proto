@@ -26,7 +26,7 @@ message SubmitBlockResponse {
 }
 
 message CheckBlockAvailabilityRequest {
-	uint64 height = 1;
+	uint64 data_layer_height = 1;
 }
 
 message CheckBlockAvailabilityResponse {
@@ -34,11 +34,11 @@ message CheckBlockAvailabilityResponse {
 	bool data_available = 2;
 }
 
-message RetrieveBlockRequest {
-	uint64 height = 1;
+message RetrieveBlocksRequest {
+	uint64 data_layer_height = 1;
 }
 
-message RetrieveBlockResponse {
+message RetrieveBlocksResponse {
 	DAResponse result = 1;
 	repeated optimint.Block blocks = 2;
 }
@@ -46,5 +46,5 @@ message RetrieveBlockResponse {
 service DALCService {
 	rpc SubmitBlock(SubmitBlockRequest) returns (SubmitBlockResponse) {}
 	rpc CheckBlockAvailability(CheckBlockAvailabilityRequest) returns (CheckBlockAvailabilityResponse) {}
-	rpc RetrieveBlock(RetrieveBlockRequest) returns (RetrieveBlockResponse) {}
+	rpc RetrieveBlocks(RetrieveBlocksRequest) returns (RetrieveBlocksResponse) {}
 }

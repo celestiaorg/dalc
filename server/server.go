@@ -6,15 +6,17 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gogo/protobuf/proto"
+	"google.golang.org/grpc"
+
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	coretypes "github.com/tendermint/tendermint/types"
+
 	"github.com/celestiaorg/celestia-node/service/header"
 	"github.com/celestiaorg/celestia-node/service/share"
 	"github.com/celestiaorg/dalc/config"
 	"github.com/celestiaorg/dalc/proto/dalc"
 	"github.com/celestiaorg/dalc/proto/optimint"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/gogo/protobuf/proto"
-	coretypes "github.com/tendermint/tendermint/types"
-	"google.golang.org/grpc"
 )
 
 // New creates a grpc server ready to listen for incoming messages from optimint
@@ -88,7 +90,7 @@ func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq 
 
 // CheckBlockAvailability samples shares from the underlying data availability layer
 func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context, req *dalc.CheckBlockAvailabilityRequest) (*dalc.CheckBlockAvailabilityResponse, error) {
-	extHeader, err := d.hstore.GetByHeight(ctx, req.Height)
+	extHeader, err := d.hstore.GetByHeight(ctx, req.DataLayerHeight)
 	if err != nil {
 		return nil, err
 	}
@@ -113,8 +115,8 @@ func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context
 	}
 }
 
-func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *dalc.RetrieveBlockRequest) (*dalc.RetrieveBlockResponse, error) {
-	extHeader, err := d.hstore.GetByHeight(ctx, req.Height)
+func (d *DataAvailabilityLightClient) RetrieveBlocks(ctx context.Context, req *dalc.RetrieveBlocksRequest) (*dalc.RetrieveBlocksResponse, error) {
+	extHeader, err := d.hstore.GetByHeight(ctx, req.DataLayerHeight)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +147,7 @@ func (d *DataAvailabilityLightClient) RetrieveBlock(ctx context.Context, req *da
 		blocks = append(blocks, &block)
 	}
 
-	return &dalc.RetrieveBlockResponse{
+	return &dalc.RetrieveBlocksResponse{
 		Result: &dalc.DAResponse{
 			Code: dalc.StatusCode_STATUS_CODE_SUCCESS,
 		},

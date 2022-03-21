@@ -7,6 +7,7 @@ Month, DD, YYYY
 ### BREAKING CHANGES
 
 - [server] [Simplify API #58 @evan-forbes](https://github.com/celestiaorg/dalc/pull/58)
+- [server] [Rename DALC APIs for better visibility #68 @tzdybal](https://github.com/celestiaorg/dalc/pull/58)
 
 ### FEATURES
 
