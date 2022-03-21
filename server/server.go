@@ -4,28 +4,23 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	"math"
-	"os"
 	"strings"
 
-	"github.com/celestiaorg/celestia-node/core"
-	nodecore "github.com/celestiaorg/celestia-node/core"
-	cnode "github.com/celestiaorg/celestia-node/node"
+	"github.com/gogo/protobuf/proto"
+	"google.golang.org/grpc"
+
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	coretypes "github.com/tendermint/tendermint/types"
+
+	"github.com/celestiaorg/celestia-node/service/header"
+	"github.com/celestiaorg/celestia-node/service/share"
 	"github.com/celestiaorg/dalc/config"
 	"github.com/celestiaorg/dalc/proto/dalc"
 	"github.com/celestiaorg/dalc/proto/optimint"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/gogo/protobuf/proto"
-	tmlog "github.com/tendermint/tendermint/libs/log"
-	"github.com/tendermint/tendermint/pkg/da"
-	coretypes "github.com/tendermint/tendermint/types"
-	"google.golang.org/grpc"
 )
 
 // New creates a grpc server ready to listen for incoming messages from optimint
-func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, error) {
-	logger := tmlog.NewTMLogger(os.Stdout)
-
+func New(cfg config.ServerConfig, ss share.Service, hstore header.Store) (*grpc.Server, error) {
 	// connect to a celestia full node to submit txs/query todo: change when
 	// celestia-node does this for us
 	client, err := grpc.Dial(cfg.GRPCAddress, grpc.WithInsecure())
@@ -34,7 +29,7 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 	}
 
 	// open a keyring using the configured settings
-	ring, err := keyring.New("dalc", cfg.KeyringBackend, cfg.KeyringPath, strings.NewReader("."))
+	ring, err := keyring.New(cfg.KeyringAccName, cfg.KeyringBackend, cfg.KeyringPath, strings.NewReader("."))
 	if err != nil {
 		return nil, err
 	}
@@ -44,34 +39,16 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 		return nil, err
 	}
 
-	// start a celestia light client
-	repo, err := cnode.Open(nodePath, cnode.Light)
-	if err != nil {
-		return nil, err
-	}
-	node, err := cnode.New(cnode.Light, repo)
-	if err != nil {
-		return nil, err
-	}
-
-	// connect directly to a celestia-full node
-	coreClient, err := nodecore.NewRemote("tcp", cfg.RestRPCAddress)
-	if err != nil {
-		return nil, err
-	}
-
-	node.CoreClient = coreClient
-
 	namespace, err := hex.DecodeString(cfg.Namespace)
 	if err != nil {
 		return nil, err
 	}
 
 	lc := &DataAvailabilityLightClient{
-		logger:         logger,
 		namespace:      namespace,
 		blockSubmitter: bs,
-		node:           node,
+		ss:             ss,
+		hstore:         hstore,
 	}
 
 	srv := grpc.NewServer()
@@ -81,11 +58,10 @@ func New(cfg config.ServerConfig, configPath, nodePath string) (*grpc.Server, er
 }
 
 type DataAvailabilityLightClient struct {
-	logger tmlog.Logger
-
 	namespace      []byte
 	blockSubmitter blockSubmitter
-	node           *cnode.Node
+	hstore         header.Store
+	ss             share.Service
 }
 
 // SubmitBlock posts an optimint block to celestia
@@ -109,19 +85,17 @@ func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq 
 		}, err
 	}
 
-	d.logger.Info("Submitted block to celstia", "height", resp.Height, "gas used", resp.GasUsed, "hash", resp.TxHash)
 	return &dalc.SubmitBlockResponse{Result: &dalc.DAResponse{Code: dalc.StatusCode_STATUS_CODE_SUCCESS}}, nil
 }
 
 // CheckBlockAvailability samples shares from the underlying data availability layer
 func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context, req *dalc.CheckBlockAvailabilityRequest) (*dalc.CheckBlockAvailabilityResponse, error) {
-	// get the dah for the block
-	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.DataLayerHeight))
+	extHeader, err := d.hstore.GetByHeight(ctx, req.DataLayerHeight)
 	if err != nil {
 		return nil, err
 	}
 
-	err = d.node.ShareServ.SharesAvailable(ctx, dah)
+	err = d.ss.SharesAvailable(ctx, extHeader.DAH)
 	switch err {
 	case nil:
 		return &dalc.CheckBlockAvailabilityResponse{
@@ -142,13 +116,13 @@ func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context
 }
 
 func (d *DataAvailabilityLightClient) RetrieveBlocks(ctx context.Context, req *dalc.RetrieveBlocksRequest) (*dalc.RetrieveBlocksResponse, error) {
-	dah, err := getDAH(ctx, d.node.CoreClient, int64(req.DataLayerHeight))
+	extHeader, err := d.hstore.GetByHeight(ctx, req.DataLayerHeight)
 	if err != nil {
 		return nil, err
 	}
 
 	// todo include namespace inside the request, not preconfigured
-	shares, err := d.node.ShareServ.GetSharesByNamespace(ctx, dah, d.namespace)
+	shares, err := d.ss.GetSharesByNamespace(ctx, extHeader.DAH, d.namespace)
 	if err != nil {
 		return nil, err
 	}
@@ -181,24 +155,10 @@ func (d *DataAvailabilityLightClient) RetrieveBlocks(ctx context.Context, req *d
 	}, nil
 }
 
-// getDAH is a stop gap measure until we have header service implemented in celestia-node. This should be deleted ASAP
-func getDAH(ctx context.Context, client core.Client, hate int64) (*da.DataAvailabilityHeader, error) {
-	blockResp, err := client.Block(ctx, &hate)
-	if err != nil {
-		return nil, err
-	}
+func (d *DataAvailabilityLightClient) Start(ctx context.Context) error {
+	return nil
+}
 
-	shares, _ := blockResp.Block.Data.ComputeShares()
-	rawShares := shares.RawShares()
-
-	squareSize := uint64(math.Sqrt(float64(len(shares))))
-
-	eds, err := da.ExtendShares(squareSize, rawShares)
-	if err != nil {
-		return nil, err
-	}
-
-	dah := da.NewDataAvailabilityHeader(eds)
-
-	return &dah, nil
+func (d *DataAvailabilityLightClient) Stop(ctx context.Context) error {
+	return nil
 }

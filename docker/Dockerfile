@@ -14,11 +14,11 @@ FROM ubuntu
 COPY docker/entrypoint.sh /root/entrypoint.sh
 
 # Copy in the binary
-COPY --from=builder /dalc/dalc /root/dalc
+COPY --from=builder /dalc/celestia /root/celestia
 
 WORKDIR /root
 
 EXPOSE 4200
 
 ENTRYPOINT ["/root/entrypoint.sh"]
-CMD ["dalc"]
+CMD ["celestia"]

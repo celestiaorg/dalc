@@ -11,12 +11,12 @@ test:
 	go test ./...
 
 install:
-	cd ./cmd/dalc && go install
+	go install ./cmd/celestia
 
 ## build: Build DALC binary.
 build:
 	@echo "--> Building DALC"
-	@go build ./cmd/dalc
+	@go build ./cmd/celestia
 .PHONY: build
 
 # Build DALC docker image
