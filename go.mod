@@ -13,7 +13,7 @@ require (
 	github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942
 	github.com/tendermint/spm v0.1.7
 	github.com/tendermint/tendermint v0.34.14
-	go.uber.org/fx v1.16.0
+	go.uber.org/fx v1.17.0
 	google.golang.org/grpc v1.43.0
 )
 
@@ -237,7 +237,7 @@ require (
 	go.etcd.io/bbolt v1.3.6 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
-	go.uber.org/dig v1.12.0 // indirect
+	go.uber.org/dig v1.14.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.21.0 // indirect
 	golang.org/x/crypto v0.0.0-20220112180741-5e0467b6c7ce // indirect
