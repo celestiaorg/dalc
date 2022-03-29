@@ -20,12 +20,12 @@ func DALC(
 	return New(cfg, ss, hstore)
 }
 
-func LoadConfig(store node.Store) (config.ServerConfig, error) {
+func LoadConfig(store node.Store) (func() config.ServerConfig, error) {
 	cfg, err := config.Load(store.Path())
 	if err != nil {
-		return config.ServerConfig{}, err
+		return func() config.ServerConfig { return config.ServerConfig{} }, err
 	}
-	return cfg, nil
+	return func() config.ServerConfig { return cfg }, nil
 }
 
 func GRPCServer(lc fx.Lifecycle, srv *grpc.Server, cfg config.ServerConfig) node.PluginResult {

@@ -6,6 +6,7 @@ import (
 	"github.com/celestiaorg/celestia-node/node/fxutil"
 	"github.com/celestiaorg/dalc/config"
 	logging "github.com/ipfs/go-log/v2"
+	"go.uber.org/fx"
 )
 
 var log = logging.Logger("dalc/server")
@@ -32,9 +33,21 @@ func (onp *NodePlugin) Initialize(path string) error {
 }
 
 func (onp *NodePlugin) Components(cfg *node.Config, store node.Store) fxutil.Option {
+	configLoader, err := LoadConfig(store)
+	if err != nil {
+		log.Fatal(err)
+	}
+	annotated := fxutil.Raw(
+		fx.Provide(
+			fx.Annotate(
+				GRPCServer,
+				fx.ResultTags(`group:"plugins"`),
+			),
+		),
+	)
 	return fxutil.Options(
-		fxutil.Provide(LoadConfig),
+		fxutil.Provide(configLoader),
 		fxutil.Provide(DALC),
-		fxutil.Provide(GRPCServer),
+		annotated,
 	)
 }
