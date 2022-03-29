@@ -56,6 +56,8 @@ func (s *IntegrationSuite) SetupTest() {
 	root.SetArgs([]string{
 		"light",
 		"start",
+		"--node.store",
+		fmt.Sprintf("%s/.celestia-light", tmpDir),
 	})
 
 	s.wg.Add(1)
