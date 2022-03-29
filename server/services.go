@@ -37,10 +37,12 @@ func GRPCServer(lc fx.Lifecycle, srv *grpc.Server, cfg config.ServerConfig) node
 				if err != nil {
 					return err
 				}
-				err = srv.Serve(lis)
-				if err != nil {
-					return err
-				}
+				go func() {
+					err = srv.Serve(lis)
+					if err != nil {
+						log.Fatal(err)
+					}
+				}()
 				return nil
 			},
 			OnStop: func(c context.Context) error {
