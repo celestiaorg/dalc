@@ -30,7 +30,7 @@ require (
 	github.com/celestiaorg/go-leopard v0.1.0 // indirect
 	github.com/celestiaorg/go-libp2p-messenger v0.1.0 // indirect
 	github.com/celestiaorg/merkletree v0.0.0-20210714075610-a84dc3ddbbe4 // indirect
-	github.com/celestiaorg/rsmt2d v0.3.0 // indirect
+	github.com/celestiaorg/rsmt2d v0.3.1 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/coinbase/rosetta-sdk-go v0.6.10 // indirect
@@ -260,11 +260,11 @@ require (
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.1.7-0.20210622111912-ef00f8ac3d76
 	github.com/celestiaorg/celestia-app => github.com/celestiaorg/celestia-app v0.0.2-0.20220110204345-94ef986e286c
-	github.com/celestiaorg/celestia-node => github.com/celestiaorg/celestia-node v0.2.1-0.20220316161002-53aa34a64b49
+	github.com/celestiaorg/celestia-node => github.com/celestiaorg/celestia-node v0.2.1-0.20220329214747-c879ea85baeb
 	github.com/cosmos/cosmos-sdk => github.com/celestiaorg/cosmos-sdk v0.44.1-celestia
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/ipfs/go-verifcid => github.com/celestiaorg/go-verifcid v0.0.1-lazypatch
-	github.com/libp2p/go-libp2p-pubsub v0.5.7-0.20211029175501-5c90105738cf => github.com/celestiaorg/go-libp2p-pubsub v0.5.7-0.20220202152246-c33ecdf03b34
+	github.com/libp2p/go-libp2p-pubsub v0.5.7-0.20211029175501-5c90105738cf => github.com/celestiaorg/go-libp2p-pubsub v0.5.7-0.20220325112944-d33a3e5e13d5
 	github.com/tendermint/tendermint => github.com/celestiaorg/celestia-core v0.34.14-celestia.0.20220228062426-721562a3544d
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
