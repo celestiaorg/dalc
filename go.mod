@@ -9,7 +9,7 @@ require (
 	github.com/celestiaorg/nmt v0.8.0
 	github.com/cosmos/cosmos-sdk v0.45.1
 	github.com/gogo/protobuf v1.3.3
-	github.com/ipfs/go-log/v2 v2.5.0
+	github.com/ipfs/go-log/v2 v2.5.1
 	github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942
 	github.com/tendermint/spm v0.1.7
 	github.com/tendermint/tendermint v0.34.14
