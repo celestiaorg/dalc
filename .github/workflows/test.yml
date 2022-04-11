@@ -48,7 +48,7 @@ jobs:
         run: |
           go test -mod=readonly -timeout 30m -coverprofile=profile.out -covermode=atomic ./...
         if: env.GIT_DIFF
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: "${{ github.sha }}-coverage"
           path: ./profile.out
@@ -70,7 +70,7 @@ jobs:
         run: |
           go test -mod=readonly -json -timeout 30m -race ./... > race-output.txt
         if: env.GIT_DIFF
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: "${{ github.sha }}-race-output"
           path: ./race-output.txt
