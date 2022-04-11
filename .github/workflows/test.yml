@@ -88,7 +88,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-race-output"
         if: env.GIT_DIFF
