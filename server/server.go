@@ -90,7 +90,7 @@ func (d *DataAvailabilityLightClient) SubmitBlock(ctx context.Context, blockReq 
 
 // CheckBlockAvailability samples shares from the underlying data availability layer
 func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context, req *dalc.CheckBlockAvailabilityRequest) (*dalc.CheckBlockAvailabilityResponse, error) {
-	extHeader, err := d.hstore.GetByHeight(ctx, req.DataLayerHeight)
+	extHeader, err := d.hstore.GetByHeight(ctx, req.DAHeight)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +116,7 @@ func (d *DataAvailabilityLightClient) CheckBlockAvailability(ctx context.Context
 }
 
 func (d *DataAvailabilityLightClient) RetrieveBlocks(ctx context.Context, req *dalc.RetrieveBlocksRequest) (*dalc.RetrieveBlocksResponse, error) {
-	extHeader, err := d.hstore.GetByHeight(ctx, req.DataLayerHeight)
+	extHeader, err := d.hstore.GetByHeight(ctx, req.DAHeight)
 	if err != nil {
 		return nil, err
 	}
