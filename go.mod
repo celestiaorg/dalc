@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/BurntSushi/toml v1.1.0
 	github.com/celestiaorg/celestia-app v0.0.0-00010101000000-000000000000
-	github.com/celestiaorg/celestia-node v0.2.1-0.20220329162857-65faaea99787
+	github.com/celestiaorg/celestia-node v0.2.1-0.20220427192949-67031945c65b
 	github.com/celestiaorg/nmt v0.8.0
 	github.com/cosmos/cosmos-sdk v0.45.1
 	github.com/gogo/protobuf v1.3.3
