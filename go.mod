@@ -11,8 +11,8 @@ require (
 	github.com/gogo/protobuf v1.3.3
 	github.com/ipfs/go-log/v2 v2.5.1
 	github.com/stretchr/testify v1.7.1-0.20210427113832-6241f9ab9942
-	github.com/tendermint/spm v0.1.7
-	github.com/tendermint/tendermint v0.34.14
+	github.com/tendermint/spm v0.1.9
+	github.com/tendermint/tendermint v0.34.16
 	go.uber.org/fx v1.16.0
 	google.golang.org/grpc v1.43.0
 )
@@ -39,7 +39,7 @@ require (
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/iavl v0.17.3 // indirect
-	github.com/cosmos/ibc-go v1.2.0 // indirect
+	github.com/cosmos/ibc-go v1.2.2 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.11.1 // indirect
 	github.com/cosmos/ledger-go v0.9.2 // indirect
 	github.com/cskr/pubsub v1.0.2 // indirect
@@ -243,7 +243,7 @@ require (
 	golang.org/x/crypto v0.0.0-20220112180741-5e0467b6c7ce // indirect
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
+	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/tools v0.1.9-0.20211228192929-ee1ca4ffc4da // indirect
@@ -259,12 +259,12 @@ require (
 
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.1.7-0.20210622111912-ef00f8ac3d76
-	github.com/celestiaorg/celestia-app => github.com/celestiaorg/celestia-app v0.0.2-0.20220110204345-94ef986e286c
+	github.com/celestiaorg/celestia-app => github.com/celestiaorg/celestia-app v0.3.0
 	github.com/celestiaorg/celestia-node => github.com/celestiaorg/celestia-node v0.2.1-0.20220329214747-c879ea85baeb
-	github.com/cosmos/cosmos-sdk => github.com/celestiaorg/cosmos-sdk v0.44.1-celestia
+	github.com/cosmos/cosmos-sdk => github.com/celestiaorg/cosmos-sdk v1.0.1-sdk-v0.44.2
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/ipfs/go-verifcid => github.com/celestiaorg/go-verifcid v0.0.1-lazypatch
 	github.com/libp2p/go-libp2p-pubsub v0.5.7-0.20211029175501-5c90105738cf => github.com/celestiaorg/go-libp2p-pubsub v0.5.7-0.20220325112944-d33a3e5e13d5
-	github.com/tendermint/tendermint => github.com/celestiaorg/celestia-core v0.34.14-celestia.0.20220228062426-721562a3544d
+	github.com/tendermint/tendermint => github.com/celestiaorg/celestia-core v1.0.1-tm-v0.34.16
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
